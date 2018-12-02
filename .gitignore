@@ -33,3 +33,7 @@
 
 # Vim .swp files
 *.sw*
+
+# Lexer and Parser output files
+*.tab.*
+*.yy.*
