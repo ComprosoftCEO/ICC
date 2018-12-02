@@ -11,17 +11,12 @@ private:
 
 public:
 
-	LabelStatement(const std::string& label) :
-	  Statement(StatementType::LABEL), label(label) {}
+	LabelStatement(const std::string& label);
+	LabelStatement(StatementType type, const std::string& label);
 
-	LabelStatement(StatementType type, const std::string& label):
-		Statement(type), label(label) {}
+	const std::string& getLabel() const;
 
-	const std::string& getLabel() const {
-		return this->label;
-	}
-
-	void toCode(FILE* output, bool isLibrary, int level) const;
+	virtual void toCode(FILE* output, bool isLibrary, int level) const;
 };
 
 #endif

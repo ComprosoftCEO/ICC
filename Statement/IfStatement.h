@@ -10,12 +10,10 @@ private:
 	StatementList* list;
 
 public:
-	IfStatement(StatementList* list) :
-	  Statement(StatementType::IF_STATEMENT), list(list) {}
-
-	~IfStatement() {delete list;}
+	IfStatement(StatementList* list);
+	~IfStatement();
 	
-	void toCode(FILE* output, bool isLibrary, int level) const {}
+	void toCode(FILE* output, bool isLibrary, int level) const;
 };
 
 #endif

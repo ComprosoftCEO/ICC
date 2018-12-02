@@ -21,13 +21,11 @@ private:
 	StatementType type;
 
 public:
-	Statement(StatementType type): type(type) {}
+	Statement(StatementType type);
 	virtual ~Statement() = default;
 
 
-	inline StatementType getType() const {
-		return this->type;
-	}
+	StatementType getType() const;
 
 	//Get the C code output for this statement
 	//	output    = The file to write to

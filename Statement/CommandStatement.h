@@ -9,10 +9,9 @@ private:
 	char command;
 
 public:
-	CommandStatement(char command) :
-	  Statement(StatementType::COMMAND), command(command) {}
+	CommandStatement(char command);
 
-	char getCommand() const {return this->command;}
+	char getCommand() const;
 	void toCode(FILE* output, bool isLibrary, int level) const;
 };
 

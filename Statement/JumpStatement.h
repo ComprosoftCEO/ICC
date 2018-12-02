@@ -6,8 +6,7 @@
 class JumpStatement: public LabelStatement {
 
 public:
-	JumpStatement(const std::string& label) :
-	  LabelStatement(StatementType::JUMP, label) {}
+	JumpStatement(const std::string& label);
 
 	void toCode(FILE* output, bool isLibrary, int level) const;
 };

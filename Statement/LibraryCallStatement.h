@@ -6,8 +6,7 @@
 class LibraryCallStatement : public LabelStatement {
 
 public:
-	LibraryCallStatement(const std::string& label):
-	  LabelStatement(StatementType::LIBRARY_CALL,label) {}
+	LibraryCallStatement(const std::string& label);
 	
 	void toCode(FILE* output, bool isLibrary, int level) const;
 };

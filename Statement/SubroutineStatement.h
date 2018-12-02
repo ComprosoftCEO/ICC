@@ -6,8 +6,7 @@
 class SubroutineStatement: public LabelStatement {
 
 public:
-	SubroutineStatement(const std::string& label):
-	  LabelStatement(StatementType::SUBROUTINE, label) {}
+	SubroutineStatement(const std::string& label);
 
 	void toCode(FILE* output, bool isLibrary, int level) const;
 };
