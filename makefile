@@ -2,11 +2,12 @@
 CC=g++
 CFLAGS=-std=c++11 -IInclude
 
-PROGRAM=Insanity.out
+PROGRAM=ICK.out
 
 OBJECTS=\
 	insanity.tab.o \
 	insanity.yy.o \
+	ICK.o \
 	InsanityProgram.o \
 	CodeSegments.o \
 	Statement/Statement.o \
@@ -41,8 +42,8 @@ $(PROGRAM): $(OBJECTS)
 
 # Run the file
 .PHONY: run
-run: Insanity.out
-	./Insanity.out
+run: $(PROGRAM)
+	./$(PROGRAM)
 
 # Remove all files
 .PHONY: clean

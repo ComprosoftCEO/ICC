@@ -9,7 +9,7 @@ extern int yylex();
 extern int yyparse();
 extern FILE *yyin;
  
-void yyerror(InsanityProgram* program, const char *s);
+static void yyerror(InsanityProgram* program, const char *s);
 %}
 
 %union {
@@ -68,29 +68,8 @@ libraryCall:  LIBSUBOPEN lblName LIBSUBCLOSE	{$<label>$ = $<label>2;}
 
 %%
 
-int main(int argc, char** argv) {
 
-	// Open a file handle to a particular file:
-	//FILE *myfile = fopen("insanity.file", "r");
-	// Make sure it is valid:
-	/*if (!myfile) {
-		printf("I can't open insanity.file\n");
-		return -1;
-	}*/
-	
-	// Set Flex to read from it instead of defaulting to STDIN:
-//	yyin = myfile;
-	
-	// Parse through the input:
-	InsanityProgram* program = new InsanityProgram;
-	yyparse(program);
-
-	program->toProgram(stdout);
-	delete program;
-	return 0;
-}
-
-void yyerror(InsanityProgram* program, const char *s) {
+static void yyerror(InsanityProgram* program, const char *s) {
 	printf("Parse Error! Message: %s\n",s);
 	exit(-1);
 }

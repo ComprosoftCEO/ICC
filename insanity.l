@@ -32,3 +32,4 @@
 
 [;<>'"_^|$~+\-&`@%=*/\\!?#,]	{yylval.cmd = yytext[0]; return COMMAND;}
 .								/* Ignore empty text */
+\n								/* Ignore new lines */
