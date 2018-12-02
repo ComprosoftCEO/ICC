@@ -141,7 +141,7 @@ void libraryCall(FILE* file, const std::string& label, bool isLibrary, int level
 	//printLevel(file,level);
 }
 
-void returnFrom(FILE* file, bool isLibrary) {
+void returnFrom(FILE* file, bool isLibrary, int level) {
 
 }
 
@@ -163,23 +163,23 @@ void endIf(FILE* file, int level) {
 //
 // Memory Cursors
 //
-void cursorRight(FILE* file) {
+void cursorRight(FILE* file, bool isLibrary, int level) {
 
 }
 
-void cursorLeft(FILE* file) {
+void cursorLeft(FILE* file, bool isLibrary, int level) {
 
 }
 
-void increase10(FILE* file) {
+void increase10(FILE* file, bool isLibrary, int level) {
 
 }
 
-void decrease10(FILE* file) {
+void decrease10(FILE* file, bool isLibrary, int level) {
 
 }
 
-void resetCursors(FILE* file) {
+void resetCursors(FILE* file, bool isLibrary, int level) {
 
 }
 
@@ -187,19 +187,19 @@ void resetCursors(FILE* file) {
 //
 // Memory and registers
 //
-void uploadACC(FILE* file) {
+void uploadACC(FILE* file, bool isLibrary, int level) {
 
 }
 
-void swapMemory(FILE* file) {
+void swapMemory(FILE* file, bool isLibrary, int level) {
 
 }
 
-void saveBackup(FILE* file) {
+void saveBackup(FILE* file, bool isLibrary, int level) {
 
 }
 
-void swapBackup(FILE* file) {
+void swapBackup(FILE* file, bool isLibrary, int level) {
 
 }
 
@@ -207,27 +207,27 @@ void swapBackup(FILE* file) {
 //
 // Maths
 //
-void add(FILE* file) {
+void add(FILE* file, bool isLibrary, int level) {
 
 }
 
-void sub(FILE* file) {
+void sub(FILE* file, bool isLibrary, int level) {
 
 }
 
-void addBackup(FILE* file) {
+void addBackup(FILE* file, bool isLibrary, int level) {
 
 }
 
-void negate(FILE* file) {
+void negate(FILE* file, bool isLibrary, int level) {
 
 }
 
-void resetACC(FILE* file) {
+void resetACC(FILE* file, bool isLibrary, int level) {
 
 }
 
-void randomNumber(FILE* file) {
+void randomNumber(FILE* file, bool isLibrary, int level) {
 
 }
 
@@ -235,23 +235,23 @@ void randomNumber(FILE* file) {
 //
 // Comparisons
 //
-void EQU(FILE* file) {
+void EQU(FILE* file, bool isLibrary, int level) {
 
 }
 
-void NEQ(FILE* file) {
+void NEQ(FILE* file, bool isLibrary, int level) {
 
 }
 
-void GTR(FILE* file) {
+void GTR(FILE* file, bool isLibrary, int level) {
 
 }
 
-void LSS(FILE* file) {
+void LSS(FILE* file, bool isLibrary, int level) {
 
 }
 
-void testOverflow(FILE* file) {
+void testOverflow(FILE* file, bool isLibrary, int level) {
 
 }
 
@@ -259,14 +259,14 @@ void testOverflow(FILE* file) {
 //
 // I/O functions
 //
-void getUserInput(FILE* file) {
+void getUserInput(FILE* file, bool isLibrary, int level) {
 
 }
 
-void outputChar(FILE* file) {
+void outputChar(FILE* file, bool isLibrary, int level) {
 
 }
 
-void pause(FILE* file) {
+void pause(FILE* file, bool isLibrary, int level) {
 
 }
