@@ -1,4 +1,4 @@
-#include "LabelStatement.h"
+#include <LabelStatement.h>
 
 //
 // Constructors

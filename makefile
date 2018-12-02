@@ -1,6 +1,6 @@
 # Makefile for Insanity C Compiler
 CC=g++
-CFLAGS=-std=c++11
+CFLAGS=-std=c++11 -IInclude
 
 PROGRAM=Insanity.out
 
@@ -47,4 +47,4 @@ run: Insanity.out
 .PHONY: clean
 clean:
 	rm -f $(PROGRAM) $(OBJECTS)
-	rm -f insanity.tab.cpp insanity.yy.cpp
+	rm -f insanity.tab.cpp insanity.yy.cpp insanity.tab.hpp
