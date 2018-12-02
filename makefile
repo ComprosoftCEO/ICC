@@ -8,6 +8,7 @@ OBJECTS=\
 	insanity.tab.o \
 	insanity.yy.o \
 	InsanityProgram.o \
+	CodeSegments.o \
 	Statement/Statement.o \
 	Statement/CommandStatement.o \
 	Statement/LabelStatement.o \

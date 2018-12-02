@@ -1,10 +1,12 @@
 #include <InsanityParser.h>
+using std::string;
+using std::set;
 
 
 //
 // Constructor
 //
-InsanityProgram::InsanityProgram() {}
+InsanityProgram::InsanityProgram(): labelID(0) {}
 
 
 //
@@ -21,7 +23,7 @@ InsanityProgram::~InsanityProgram() {
 //	A library has at least one public library label
 //
 bool InsanityProgram::isLibrary() const {
-	return this->libLabel.size() > 0;
+	return (this->libLabel.size() > 0);
 }
 
 
@@ -29,8 +31,8 @@ bool InsanityProgram::isLibrary() const {
 //
 // Add a label to the list of defined labels, testing for duplicates
 //
-void InsanityProgram::labelDefinition(const std::string& label) {
-	if (this->resolved.find(label) != this->resolved.end()) {
+void InsanityProgram::labelDefinition(const string& label) {
+	if (this->resolved.count(label) > 0) {
 		this->duplicate.insert(label);
 	}
 
@@ -42,8 +44,8 @@ void InsanityProgram::labelDefinition(const std::string& label) {
 //
 // Add any jump or subroutine labels to the lists as well
 //
-void InsanityProgram::labelCall(const std::string& label) {
-	if (this->resolved.find(label) != this->resolved.end()) {
+void InsanityProgram::labelCall(const string& label) {
+	if (this->resolved.count(label) <= 0) {
 		this->unresolved.insert(label);
 	}
 }
@@ -52,15 +54,19 @@ void InsanityProgram::labelCall(const std::string& label) {
 //
 // Define library entry points (testing for duplicates)
 //
-void InsanityProgram::libraryLabel(const std::string& label) {
+void InsanityProgram::libraryLabel(const string& label) {
 	labelDefinition(label);
-	this->libLabel.insert(label);
+
+	//Each library call only gets one ID
+	if (this->libLabel.count(label) <= 0) {
+		this->libLabel[label] = labelID++;
+	}
 }
 
 //
 // Declare any external library calls
 //
-void InsanityProgram::libraryCall(const std::string& call) {
+void InsanityProgram::libraryCall(const string& call) {
 	this->libCall.insert(call);
 }
 
@@ -78,19 +84,60 @@ StatementList* InsanityProgram::getList() const {
 }
 
 
+
+//
+// Print out a set to the console
+//
+static void printSet(const char* message, const set<string> toPrint) {
+	for (set<string>::const_iterator it = toPrint.begin(); it != toPrint.end(); ++it) {
+		fprintf(stderr,"%s '%s'\n",message,(*it).c_str());
+	}
+}
+
+
 //
 // Convert to a text program
 //
 bool InsanityProgram::toProgram(FILE* file) const {
+
 	//Make sure we have statements
 	if ((!list) || (list->size() <= 0)) {
 		fprintf(stderr,"No program to compile!\n");
 		return false;
 	}
 
+	//Test for duplicate and unresolved labels
+	bool fail = false;
 
-	this->list->toCode(file,this->isLibrary(),0);
+	if (this->duplicate.size() > 0) {
+		printSet("Duplicate Label",this->duplicate);
+		fail = true;
+	}
+	if (this->unresolved.size() > 0) {
+		printSet("Unresolved Label",this->unresolved);
+		fail = true;
+	}
+	if (fail) {
+		return false;
+	}
 
+
+	//Okay, write the code!!!
+	headerCode(file);
+	defineLibraryCalls(file,this->libCall);
+	if (this->isLibrary()) {
+		defineLibraryLabels(file,this->libLabel);
+
+		mainSharedFunction(file,this->libLabel);
+		  this->list->toCode(file,this->isLibrary(),1);
+		endSharedMain(file);
+	} else {
+		mainFunction(file);
+		  this->list->toCode(file,this->isLibrary(),1);
+		endMain(file);
+	}
+
+	return true;
 }
 
 

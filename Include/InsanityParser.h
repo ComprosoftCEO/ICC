@@ -3,6 +3,7 @@
 
 #include <cstdio>
 #include <set>
+#include <map>
 
 //All of the statement types
 #include "Statement.h"
@@ -23,7 +24,8 @@ private:
 	std::set<std::string> resolved;			// List of resolved labels
 	std::set<std::string> duplicate;		// Duplicate labels
 
-	std::set<std::string> libLabel;			// List of library labels
+	int labelID;							// Unique ID 
+	std::map<std::string,int> libLabel;		// List of library labels
 	std::set<std::string> libCall;			// List of external library calls
 
 
@@ -57,5 +59,18 @@ public:
 
 
 void printLevel(FILE* file, int level);
+
+
+
+//Functions to print out the code
+void headerCode(FILE* file);
+
+void mainFunction(FILE* file);
+void endMain(FILE* file);
+void mainSharedFunction(FILE* file,const std::map<std::string,int> libs);
+void endSharedMain(FILE* file);
+
+void defineLibraryCalls(FILE* file,const std::set<std::string>& libs);
+void defineLibraryLabels(FILE* file, const std::map<std::string,int> libs);
 
 #endif

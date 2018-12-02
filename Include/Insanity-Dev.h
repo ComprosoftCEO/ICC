@@ -35,6 +35,10 @@ typedef struct Insanity_t {
 	void* stack[100];		// 100 Stack slots
 	short sp;				// Stack pointer (0 to 99)
 
+	//--- Command Line Arguments ---
+	int argc;
+	char** argv;
+
 	//--- Library Specific Data ---
 	LibraryData_t* data;
 	size_t dataLen;				// DO NOT MODIFY
