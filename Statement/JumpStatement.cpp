@@ -1,3 +1,4 @@
+#include <InsanityParser.h>
 #include <JumpStatement.h>
 
 
@@ -12,6 +13,7 @@ JumpStatement::JumpStatement(const std::string& label) :
 // Convert to code
 //
 void JumpStatement::toCode(FILE* output, bool isLibrary, int level) const {
-	//Does nothing right now
+	printLevel(output,level);
+	fprintf(output,"Jump %s\n",this->getLabel().c_str());
 }
 

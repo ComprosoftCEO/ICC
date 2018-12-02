@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 	InsanityProgram* program = new InsanityProgram(false);
 	yyparse(program);
 
-	program->toProgram();
+	program->toProgram(stdout);
 	delete program;
 	return 0;
 }

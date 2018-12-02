@@ -1,6 +1,7 @@
 #ifndef INSANITY_PARSER_HEADER
 #define INSANITY_PARSER_HEADER
 
+#include <cstdio>
 #include <set>
 
 //All of the statement types
@@ -36,9 +37,13 @@ public:
 
 
 	void setList(StatementList* newList);
-	StatementList* getList();
+	StatementList* getList() const;
 
-	void toProgram();
+	void toProgram(FILE* file) const;
 };
+
+
+
+void printLevel(FILE* file, int level);
 
 #endif

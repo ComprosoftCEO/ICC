@@ -3,7 +3,7 @@
 //
 // Constructor
 //
-StatementList::StatementList(): statements{nullptr} {}
+StatementList::StatementList() {}
 
 
 //

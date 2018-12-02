@@ -1,3 +1,4 @@
+#include <InsanityParser.h>
 #include <IfStatement.h>
 
 //
@@ -19,5 +20,11 @@ IfStatement::~IfStatement() {
 // Convert to C code
 //
 void IfStatement::toCode(FILE* output, bool isLibrary, int level) const {
-	//Does nothing right now
+	printLevel(output,level);
+	fprintf(output,"IF () {\n");
+
+	this->list->toCode(output,isLibrary,level+1);
+
+	printLevel(output,level);
+	fprintf(output,"}\n");
 }

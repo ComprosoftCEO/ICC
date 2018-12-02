@@ -53,7 +53,7 @@ void InsanityProgram::setList(StatementList* newList) {
 	this->list = newList;
 }
 
-StatementList* InsanityProgram::getList() {
+StatementList* InsanityProgram::getList() const {
 	return this->list;
 }
 
@@ -61,6 +61,18 @@ StatementList* InsanityProgram::getList() {
 //
 // Convert to a text program
 //
-void InsanityProgram::toProgram() {
+void InsanityProgram::toProgram(FILE* file) const {
+	if (!list) {return;}
+	list->toCode(file,this->isLibrary,0);
 
+}
+
+
+//
+// Print number of tabs for the level
+//
+void printLevel(FILE* file, int level) {
+	for (int i = 0; i < level; ++i) {
+		fprintf(file,"\t");
+	}
 }

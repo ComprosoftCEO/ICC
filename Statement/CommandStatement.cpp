@@ -1,3 +1,4 @@
+#include <InsanityParser.h>
 #include <CommandStatement.h>
 
 
@@ -20,5 +21,6 @@ char CommandStatement::getCommand() const {
 // Convert to printable code (lots of different types here)
 //
 void CommandStatement::toCode(FILE* output, bool isLibrary, int level) const {
-
+	printLevel(output,level);
+	fprintf(output,"Command: %c\n",this->command);
 }
