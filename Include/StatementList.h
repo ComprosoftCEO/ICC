@@ -16,6 +16,8 @@ public:
 
 	void addStatement(Statement* statement);
 
+	unsigned long size();
+
 	void toCode(FILE* output, bool isLibrary, int level) const;
 };
 

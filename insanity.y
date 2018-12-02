@@ -23,7 +23,8 @@ void yyerror(InsanityProgram* program, const char *s);
 %token <label> LABEL
 %token <cmd> COMMAND
 
-%token LIBOPEN LIBCLOSE
+%token LIBSUBOPEN LIBSUBCLOSE
+%token LIBLBLOPEN LIBLBLCLOSE
 %parse-param {InsanityProgram* program}
 
 %%
@@ -42,10 +43,11 @@ insanity
 statement
 	: COMMAND				{$<stmt>$ = new CommandStatement($<cmd>1);}
 	| if					{$<stmt>$ = new IfStatement($<list>1);}
-	| label					{$<stmt>$ = new LabelStatement(*$<label>1); 	  program->resolveLabel(*$<label>1); 	delete($<label>1);}
-	| jump					{$<stmt>$ = new JumpStatement(*$<label>1); 		  program->unresolvedLabel(*$<label>1);	delete($<label>1);}
-	| subroutine			{$<stmt>$ = new SubroutineStatement(*$<label>1);  program->unresolvedLabel(*$<label>1); delete($<label>1);}
-	| library				{$<stmt>$ = new LibraryCallStatement(*$<label>1); program->addExternal(*$<label>1);		delete($<label>1);}
+	| label					{$<stmt>$ = new LabelStatement(*$<label>1); 	  program->labelDefinition(*$<label>1); delete($<label>1);}
+	| jump					{$<stmt>$ = new JumpStatement(*$<label>1); 		  program->labelCall(*$<label>1);		delete($<label>1);}
+	| subroutine			{$<stmt>$ = new SubroutineStatement(*$<label>1);  program->labelCall(*$<label>1); 		delete($<label>1);}
+	| libraryLabel			{$<stmt>$ = new LabelStatement(*$<label>1);		  program->libraryLabel(*$<label>1);	delete($<label>1);}
+	| libraryCall			{$<stmt>$ = new LibraryCallStatement(*$<label>1); program->libraryCall(*$<label>1);		delete($<label>1);}
 
 
 //A Label Name is a non-empty list of LABEL tokens
@@ -55,11 +57,14 @@ lblName
 
 
 //Special sub-statements
-label:		':' lblName ':'			{$<label>$ = $<label>2;}
-if:			'{' insanity '}'	 	{$<list>$ = $<list>2;}
-jump:       '(' lblName ')'			{$<label>$ = $<label>2;}
-subroutine: '[' lblName ']'			{$<label>$ = $<label>2;}
-library: LIBOPEN lblName LIBCLOSE	{$<label>$ = $<label>2;}
+label:		':' lblName ':'				{$<label>$ = $<label>2;}
+if:			'{' insanity '}'		 	{$<list>$ = $<list>2;}
+jump:       '(' lblName ')'				{$<label>$ = $<label>2;}
+subroutine: '[' lblName ']'				{$<label>$ = $<label>2;}
+
+//Library functions
+libraryLabel: LIBLBLOPEN lblName LIBLBLCLOSE	{$<label>$ = $<label>2;}
+libraryCall:  LIBSUBOPEN lblName LIBSUBCLOSE	{$<label>$ = $<label>2;}
 
 %%
 
@@ -77,7 +82,7 @@ int main(int argc, char** argv) {
 //	yyin = myfile;
 	
 	// Parse through the input:
-	InsanityProgram* program = new InsanityProgram(false);
+	InsanityProgram* program = new InsanityProgram;
 	yyparse(program);
 
 	program->toProgram(stdout);

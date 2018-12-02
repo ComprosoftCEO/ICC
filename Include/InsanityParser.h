@@ -22,24 +22,36 @@ private:
 	std::set<std::string> unresolved;		// List of unresolved labels
 	std::set<std::string> resolved;			// List of resolved labels
 	std::set<std::string> duplicate;		// Duplicate labels
-	std::set<std::string> external;			// List of external library calls
-	bool isLibrary;
+
+	std::set<std::string> libLabel;			// List of library labels
+	std::set<std::string> libCall;			// List of external library calls
 
 
 public:
-	InsanityProgram(bool isLibrary);
+	InsanityProgram();
 	~InsanityProgram();
 
-	//Validate labels and calls as they are found in the program
-	void resolveLabel(const std::string& label);
-	void unresolvedLabel(const std::string& label);
-	void addExternal(const std::string& call);
+	//Test if this will compile to a library or a program
+	bool isLibrary() const;
 
 
+	//Validate labels as they are found in the program
+	//	Makes sure there are no duplicate labels, and that every call has a label to jump to
+	void labelDefinition(const std::string& label);
+	void labelCall(const std::string& label);
+
+	//Also store any library calls or library entry points
+	void libraryLabel(const std::string& label);
+	void libraryCall(const std::string& call);
+
+
+	//Update the internal list of statements
 	void setList(StatementList* newList);
 	StatementList* getList() const;
 
-	void toProgram(FILE* file) const;
+
+	//Returns false on error
+	bool toProgram(FILE* file) const;
 };
 
 

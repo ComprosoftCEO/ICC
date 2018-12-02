@@ -4,20 +4,32 @@
 //
 // Constructor
 //
-InsanityProgram::InsanityProgram(bool isLibrary): isLibrary(isLibrary) {}
+InsanityProgram::InsanityProgram() {}
 
 
 //
 // Destructor
 //
-InsanityProgram::~InsanityProgram() {delete list;}
+InsanityProgram::~InsanityProgram() {
+	delete list;
+}
 
 
 
 //
-//Validate labels and calls as they are found in the program
-//	Also test for duplicate labels
-void InsanityProgram::resolveLabel(const std::string& label) {
+// Test if this compiles to a library or a program
+//	A library has at least one public library label
+//
+bool InsanityProgram::isLibrary() const {
+	return this->libLabel.size() > 0;
+}
+
+
+
+//
+// Add a label to the list of defined labels, testing for duplicates
+//
+void InsanityProgram::labelDefinition(const std::string& label) {
 	if (this->resolved.find(label) != this->resolved.end()) {
 		this->duplicate.insert(label);
 	}
@@ -30,7 +42,7 @@ void InsanityProgram::resolveLabel(const std::string& label) {
 //
 // Add any jump or subroutine labels to the lists as well
 //
-void InsanityProgram::unresolvedLabel(const std::string& label) {
+void InsanityProgram::labelCall(const std::string& label) {
 	if (this->resolved.find(label) != this->resolved.end()) {
 		this->unresolved.insert(label);
 	}
@@ -38,10 +50,18 @@ void InsanityProgram::unresolvedLabel(const std::string& label) {
 
 
 //
-// Declare any external functions
+// Define library entry points (testing for duplicates)
 //
-void InsanityProgram::addExternal(const std::string& call) {
-	this->external.insert(call);
+void InsanityProgram::libraryLabel(const std::string& label) {
+	labelDefinition(label);
+	this->libLabel.insert(label);
+}
+
+//
+// Declare any external library calls
+//
+void InsanityProgram::libraryCall(const std::string& call) {
+	this->libCall.insert(call);
 }
 
 
@@ -61,9 +81,15 @@ StatementList* InsanityProgram::getList() const {
 //
 // Convert to a text program
 //
-void InsanityProgram::toProgram(FILE* file) const {
-	if (!list) {return;}
-	list->toCode(file,this->isLibrary,0);
+bool InsanityProgram::toProgram(FILE* file) const {
+	//Make sure we have statements
+	if ((!list) || (list->size() <= 0)) {
+		fprintf(stderr,"No program to compile!\n");
+		return false;
+	}
+
+
+	this->list->toCode(file,this->isLibrary(),0);
 
 }
 

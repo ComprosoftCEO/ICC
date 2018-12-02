@@ -22,9 +22,17 @@ StatementList::~StatementList() {
 // Add a statement to the list
 //
 void StatementList::addStatement(Statement* statement) {
-	statements.push_back(statement);
+	this->statements.push_back(statement);
 }
 
+
+
+//
+// Number of elements in the list
+//
+unsigned long StatementList::size() {
+	return this->statements.size();
+}
 
 //
 // Convert to printable C code
