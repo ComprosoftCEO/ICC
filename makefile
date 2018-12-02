@@ -1,5 +1,7 @@
 # Makefile for Insanity C Compiler
 
+
+
 all: Insanity.out
 
 Insanity.out: insanity.tab.cpp insanity.yy.cpp

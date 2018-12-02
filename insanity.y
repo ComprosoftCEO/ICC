@@ -31,17 +31,22 @@ insanity
 //Single statement
 statement
 	: COMMAND				{printf("Read Command: %c\n", $<cmd>1);}
+	| ':' label ':'
 	| if
 	| jump
 	| subroutine
-	| label
+
+
+//A Label is a non-empty list of LABEL tokens
+label
+	: LABEL						{printf("Read Label: %s\n", $<label>1);}
+	| label LABEL				{printf("Append Label: %s\n", $<label>2);}
 
 
 //Special sub-statements
 if:			'{' insanity '}' 	{printf("Read If\n");}
-label: 		':' LABEL ':'		{printf("Read Label Definition: %s\n", $<label>2);}
-jump:       '(' LABEL ')'		{printf("Read Jump Definition: %s\n", $<label>2);}
-subroutine: '[' LABEL ']'		{printf("Read Subroutine: %s\n", $<label>2);}
+jump:       '(' label ')'		{printf("Read Jump Definition: %s\n", $<label>2);}
+subroutine: '[' label ']'		{printf("Read Subroutine: %s\n", $<label>2);}
 
 
 %%
