@@ -8,9 +8,8 @@ class JumpStatement: public LabelStatement {
 public:
 	JumpStatement(const std::string& label) :
 	  LabelStatement(StatementType::JUMP, label) {}
-	~JumpStatement() = default;
 
-	void toCode() const;
+	void toCode(FILE* output, bool isLibrary, int level) const;
 };
 
 #endif	/* Jump Statement Included */

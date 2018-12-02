@@ -21,7 +21,7 @@ public:
 		return this->label;
 	}
 
-	void toCode() const;
+	void toCode(FILE* output, bool isLibrary, int level) const;
 };
 
 #endif

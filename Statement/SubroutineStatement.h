@@ -9,9 +9,7 @@ public:
 	SubroutineStatement(const std::string& label):
 	  LabelStatement(StatementType::SUBROUTINE, label) {}
 
-	~SubroutineStatement() = default;
-
-	void toCode() const;
+	void toCode(FILE* output, bool isLibrary, int level) const;
 };
 
 #endif	/* Subroutine Statement Included */

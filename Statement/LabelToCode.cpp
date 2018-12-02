@@ -7,21 +7,21 @@
 //
 // Label to Code
 //
-void LabelStatement::toCode() const {}
+void LabelStatement::toCode(FILE* output, bool isLibrary, int level) const {}
 
 //
 // Jump to Code
 //
-void JumpStatement::toCode() const {}
+void JumpStatement::toCode(FILE* output, bool isLibrary, int level) const {}
 
 
 //
 // Subroutine to code
 //
-void SubroutineStatement::toCode() const {}
+void SubroutineStatement::toCode(FILE* output, bool isLibrary, int level) const {}
 
 
 //
 // Library Call to Code
 //
-void LibraryCallStatement::toCode() const {}
+void LibraryCallStatement::toCode(FILE* output, bool isLibrary, int level) const {}

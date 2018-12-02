@@ -4,6 +4,6 @@
 //
 // Convert the command to code
 //
-void CommandStatement::toCode() const {
+void CommandStatement::toCode(FILE* output, bool isLibrary, int level) const {
 
 }

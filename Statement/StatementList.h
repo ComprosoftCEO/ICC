@@ -12,15 +12,20 @@ private:
 
 public:
 	StatementList() {}
-	~StatementList() {}
+	~StatementList() {
+		//Delete all statements
+		std::vector<Statement*>::iterator it;
+		for (it = statements.begin(); it != statements.end(); ++it) {
+			delete *it;
+		}
+	}
 
 	void addStatement(Statement* statement) {
 		statements.push_back(statement);
 	}
 
 
-
-	void toCode() const {}
+	void toCode(FILE* output, bool isLibrary, int level) const {}
 };
 
 #endif

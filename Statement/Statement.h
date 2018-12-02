@@ -1,6 +1,8 @@
 #ifndef STATEMENT_HEADER
 #define STATEMENT_HEADER
 
+#include <cstdio>	/* For FILE* */
+
 //All types of Insanity statements
 enum class StatementType {
 	COMMAND,
@@ -28,7 +30,10 @@ public:
 	}
 
 	//Get the C code output for this statement
-	virtual void toCode() const = 0;
+	//	output    = The file to write to
+	//	isLibrary = If true, write as library code
+	//	level	  = Number of tabs
+	virtual void toCode(FILE* output, bool isLibrary, int level) const = 0;
 };
 
 

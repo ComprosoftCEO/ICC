@@ -9,7 +9,7 @@ public:
 	LibraryCallStatement(const std::string& label):
 	  LabelStatement(StatementType::LIBRARY_CALL,label) {}
 	
-	void toCode() const;
+	void toCode(FILE* output, bool isLibrary, int level) const;
 };
 
 
