@@ -117,7 +117,7 @@ void mainFunction(FILE* file) {
 	fprintf(file,"\tsrand(time(NULL));\n");
 }
 void endMain(FILE* file) {
-	fprintf(file,"\treturn 0;\n");
+	fprintf(file,"\t/*END*/ return 0;\n");
 	fprintf(file,"}\n");
 }
 
@@ -137,12 +137,12 @@ void mainSharedFunction(FILE* file,const map<string,int> libs) {
 	}
 	fprintf(file,"\t};\n\n");
 
-	fprintf(file,"\tgoto *(JUMP_TABLE[entryPoint]);\n");
+	fprintf(file,"\tgoto *(JUMP_TABLE[entryPoint]);\n\n");
 }
 
 void endSharedMain(FILE* file) {
-	fprintf(file,"\treturn true;\n");
-	fprintf(file,"\t}\n");
+	fprintf(file,"\t/*RET*/ return true;\n");
+	fprintf(file,"}\n");
 }
 
 
@@ -163,6 +163,9 @@ void defineLibraryCalls(FILE* file,const set<string>& libs) {
 // Library Labels (for a shared library)
 //
 void defineLibraryLabels(FILE* file, const map<string,int> libs) {
+
+	//Forward declare the run function
+	fprintf(file,"static bool RunSharedLibrary(pInsanity_t insanity, int entryPoint);\n\n");
 
 	map<string,int>::const_iterator it;
 	for (it = libs.begin(); it != libs.end(); ++it) {
