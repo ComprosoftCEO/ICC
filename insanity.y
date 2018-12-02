@@ -21,15 +21,25 @@ void yyerror(const char *s);
 
 %%
 
-insanity:
-	%empty
-	| '{' insanity '}'		{printf("IFs\n");}
-	| ':' LABEL '}'			{printf("Read Label Definition: %s\n", $<label>1);}
-	| '(' LABEL ')'			{printf("Read Jump Definition: %s\n", $<label>1);}
-	| '[' LABEL ']'			{printf("Read Subroutine: %s\n", $<label>1);}
-	| insanity COMMAND		{printf("Read Command: %c\n", $<cmd>2);}
-	| COMMAND				{printf("Read Command: %c\n", $<cmd>1);}
-	;
+//List of statements
+insanity
+	: /* Empty */
+	| statement insanity	{printf("Read Statement!\n");}
+
+
+//Single statement
+statement
+	: COMMAND				{printf("Read Command: %c\b", $<cmd>1);}
+	| if
+	| jump
+	| subroutine
+	| label
+
+if:			'{' insanity '}' 	{printf("Read If\n");}
+label: 		':' LABEL ':'		{printf("Read Label Definition: %s\n", $<label>2);}
+jump:       '(' LABEL ')'		{printf("Read Jump Definition: %s\n", $<label>2);}
+subroutine: '[' LABEL ']'		{printf("Read Subroutine: %s\n", $<label>2);}
+
 
 %%
 
