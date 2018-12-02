@@ -46,6 +46,7 @@ void headerCode(FILE* file) {
 
 	//2. Some macros
 	fprintf(file,"#define CLAMP(val,left,right) if ((val) < (left)) {(val) = (left);} else if ((val) > (right)) {(val) = (right);}\n\n");
+	fprintf(file,"#define DIGIT(x) ((x) == 1 ? 10 : ((x) == 2) ? 100 : 1)\n");
 
 	//3. Structure definitions
 	fprintf(file,"typedef struct {\n");
@@ -70,6 +71,33 @@ void headerCode(FILE* file) {
 	fprintf(file,"\tsize_t dataAlloc;\n");
 	fprintf(file,"} Insanity_t, *pInsanity_t;\n\n");
 
+	//4. Static Functions
+	fprintf(file,"static void printChar(short int input) {\n");
+	fprintf(file,"\tif (input >= 0 && input < 94) {printf(\"%%c\", input+32);}\n");
+	fprintf(file,"\telse if (input >= 94) {printf(\"☺\");}\n");
+	fprintf(file,"\telse if (input == -1) {printf(\"\\n\");}\n");
+	fprintf(file,"\telse if (input == -999) {system(\"clear\");}\n");
+	fprintf(file,"\telse {printf(\"☹️\");}\n");
+	fprintf(file,"}\n\n");
+
+	fprintf(file,"static short getUserInput(void) {\n");
+	fprintf(file,"\tchar c;\n");
+	fprintf(file,"\tdo {\n");
+	fprintf(file,"\t\tc = fgetc(stdin);\n");
+	fprintf(file,"\t} while ((c < 32) || (c > 126));\n");
+	fprintf(file,"\treturn c-32;\n");
+	fprintf(file,"}\n\n");
+
+	fprintf(file,"static void pause(pInsanity_t insanity) {\n");
+	fprintf(file,"\tprintf(\"Pause Program:\\n\");\n");
+	fprintf(file,"\tprintf(\"--------------\\n\");\n");
+	fprintf(file,"\tprintf(\"Acc:      %%-6d\\tBak:     %%-6d\\n\",insanity->acc,insanity->bak);\n");
+	fprintf(file,"\tprintf(\"SP:       %%-6d\\n\",                 insanity->sp);\n");
+	fprintf(file,"\tprintf(\"Memory:   %%-6d\\tDigit:   %%-6d\\n\",insanity->mc,DIGIT(insanity->dig));\n");
+	fprintf(file,"\tprintf(\"Overflow: %%-6d\\tCompare: %%-6d\\n\",insanity->overflow,insanity->compare);\n");
+	fprintf(file,"\tprintf(\"\\nPress <Enter> to continue...\");\n");
+	fprintf(file,"\twhile(fgetc(stdin) != '\\n');\n");
+	fprintf(file,"}\n\n");
 }
 
 
