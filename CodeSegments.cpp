@@ -112,7 +112,7 @@ void mainFunction(FILE* file) {
 	fprintf(file,"int main(int argc, char** argv) {\n");
 
 	//Initialization routine
-	fprintf(file,"\tInsanity_t ins = {.sp = 99};\n");
+	fprintf(file,"\tInsanity_t ins = {.sp = 99, .argc = argc, .argv = argv};\n");
 	fprintf(file,"\tpInsanity_t insanity = &ins;\n");
 	fprintf(file,"\tsrand(time(NULL));\n");
 }
