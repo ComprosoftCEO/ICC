@@ -1,5 +1,5 @@
-#include <InsanityParser.h>
 #include <LabelStatement.h>
+#include <CodeSegment.h>
 
 //
 // Constructors
@@ -24,6 +24,5 @@ const std::string& LabelStatement::getLabel() const {
 // Convert this statement to code
 //
 void LabelStatement::toCode(FILE* output, bool isLibrary, int level) const {
-	printLevel(output,level);
-	fprintf(output,"Label %s\n",this->getLabel().c_str());
+	defineLabel(output,this->label,level);
 }

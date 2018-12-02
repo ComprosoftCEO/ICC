@@ -13,6 +13,7 @@
 #include "LibraryCallStatement.h"
 #include "IfStatement.h"
 #include "StatementList.h"
+#include "CodeSegment.h"
 
 
 // Entire insanity program
@@ -57,20 +58,5 @@ public:
 };
 
 
-
-void printLevel(FILE* file, int level);
-
-
-
-//Functions to print out the code
-void headerCode(FILE* file);
-
-void mainFunction(FILE* file);
-void endMain(FILE* file);
-void mainSharedFunction(FILE* file,const std::map<std::string,int> libs);
-void endSharedMain(FILE* file);
-
-void defineLibraryCalls(FILE* file,const std::set<std::string>& libs);
-void defineLibraryLabels(FILE* file, const std::map<std::string,int> libs);
 
 #endif

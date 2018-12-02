@@ -1,7 +1,17 @@
-#include <InsanityParser.h>
+#include <CodeSegment.h>
 using std::set;
 using std::string;
 using std::map;
+
+
+//
+// Print number of tabs for the level
+//
+static void printLevel(FILE* file, int level) {
+	for (int i = 0; i < level; ++i) {
+		fprintf(file,"\t");
+	}
+}
 
 
 //
@@ -105,4 +115,54 @@ void defineLibraryLabels(FILE* file, const map<string,int> libs) {
 		fprintf(file,"\treturn RunSharedLibrary(insanity,%d);\n",id);
 		fprintf(file,"}\n\n");
 	}
+}
+
+
+
+
+//
+// Label Statement
+//
+void defineLabel(FILE* file, const string& label, int level) {
+	printLevel(file,level);
+	fprintf(file,"%s:\n",label.c_str());
+}
+
+//
+// Goto Statement
+//
+void defineGoto(FILE* file, const string& label, int level) {
+	printLevel(file,level);
+	fprintf(file,"goto %s;\n",label.c_str());
+}
+
+
+//
+// Subroutine Statement
+//
+void defineSubroutine(FILE* file, const string& label, bool isLibrary, int level) {
+
+}
+
+
+//
+// Library Call
+//
+void defineLibraryCall(FILE* file, const std::string& label, bool isLibrary, int level) {
+	//printLevel(file,level);
+}
+
+
+
+//
+// If statements
+//
+void beginIf(FILE* file, int level) {
+	printLevel(file,level);
+	fprintf(file,"if (insanity->compare) {\n");
+}
+
+void endIf(FILE* file, int level) {
+	printLevel(file,level);
+	fprintf(file,"}\n");
 }

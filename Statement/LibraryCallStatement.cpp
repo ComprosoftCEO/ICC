@@ -1,5 +1,5 @@
-#include <InsanityParser.h>
 #include <LibraryCallStatement.h>
+#include <CodeSegment.h>
 
 
 //
@@ -14,6 +14,5 @@ LibraryCallStatement::LibraryCallStatement(const std::string& label):
 // Convert to code
 //	
 void LibraryCallStatement::toCode(FILE* output, bool isLibrary, int level) const {
-	printLevel(output,level);
-	fprintf(output,"Library Call: %s\n",this->getLabel().c_str());
+	defineLibraryCall(output,this->getLabel(),isLibrary,level);
 }

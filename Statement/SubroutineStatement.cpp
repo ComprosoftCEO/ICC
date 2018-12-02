@@ -1,5 +1,6 @@
-#include <InsanityParser.h>
 #include <SubroutineStatement.h>
+#include <CodeSegment.h>
+
 
 //
 // Constructor
@@ -11,7 +12,6 @@ SubroutineStatement::SubroutineStatement(const std::string& label):
 // To Code
 //
 void SubroutineStatement::toCode(FILE* output, bool isLibrary, int level) const {
-	printLevel(output,level);
-	fprintf(output,"Subroutine: %s\n",this->getLabel().c_str());
+	defineSubroutine(output,this->getLabel(),isLibrary,level);
 }
 

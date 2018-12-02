@@ -140,12 +140,3 @@ bool InsanityProgram::toProgram(FILE* file) const {
 	return true;
 }
 
-
-//
-// Print number of tabs for the level
-//
-void printLevel(FILE* file, int level) {
-	for (int i = 0; i < level; ++i) {
-		fprintf(file,"\t");
-	}
-}

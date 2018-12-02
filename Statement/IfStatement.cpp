@@ -1,5 +1,6 @@
-#include <InsanityParser.h>
 #include <IfStatement.h>
+#include <CodeSegment.h>
+
 
 //
 // Constructor
@@ -20,11 +21,7 @@ IfStatement::~IfStatement() {
 // Convert to C code
 //
 void IfStatement::toCode(FILE* output, bool isLibrary, int level) const {
-	printLevel(output,level);
-	fprintf(output,"IF () {\n");
-
+	beginIf(output,level);
 	this->list->toCode(output,isLibrary,level+1);
-
-	printLevel(output,level);
-	fprintf(output,"}\n");
+	endIf(output,level);
 }
