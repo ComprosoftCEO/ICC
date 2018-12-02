@@ -2,6 +2,7 @@
 #define LABEL_STATEMENT
 
 #include "Statement.h"
+#include <string>
 
 class LabelStatement: public Statement {
 

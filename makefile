@@ -4,7 +4,7 @@
 
 all: Insanity.out
 
-Insanity.out: insanity.tab.cpp insanity.yy.cpp
+Insanity.out: insanity.tab.cpp insanity.yy.cpp Statement/CommandToCode.cpp Statement/LabelToCode.cpp
 	g++ -std=c++11 $^ -o $@
 
 # Build the parser (using a Bison file)

@@ -3,10 +3,10 @@
 
 #include "LabelStatement.h"
 
-class LibraryCall : public LabelStatement {
+class LibraryCallStatement : public LabelStatement {
 
 public:
-	LibraryCall(const std::string& label):
+	LibraryCallStatement(const std::string& label):
 	  LabelStatement(StatementType::LIBRARY_CALL,label) {}
 	
 	void toCode() const;

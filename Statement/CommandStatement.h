@@ -11,6 +11,7 @@ private:
 public:
 	CommandStatement(char command) :
 	  Statement(StatementType::COMMAND), command(command) {}
+	~CommandStatement() = default;
 
 	char getCommand() const {return this->command;}
 	void toCode() const;

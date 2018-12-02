@@ -11,6 +11,7 @@
 #include "Statement/SubroutineStatement.h"
 #include "Statement/LibraryCallStatement.h"
 #include "Statement/IfStatement.h"
+#include "Statement/StatementList.h"
 
 
 // Entire insanity program
