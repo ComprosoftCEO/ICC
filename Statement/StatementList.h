@@ -14,9 +14,11 @@ public:
 	StatementList() {}
 	~StatementList() {}
 
-	void add(Statement* statement) {
+	void addStatement(Statement* statement) {
 		statements.push_back(statement);
-	}	
+	}
+
+
 
 	void toCode() const {}
 };

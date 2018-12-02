@@ -3,6 +3,12 @@
 #include "LibraryCallStatement.h"
 
 
+
+//
+// Label to Code
+//
+void LabelStatement::toCode() const {}
+
 //
 // Jump to Code
 //

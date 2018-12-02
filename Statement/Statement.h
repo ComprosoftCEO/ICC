@@ -4,6 +4,7 @@
 //All types of Insanity statements
 enum class StatementType {
 	COMMAND,
+	LABEL,
 	JUMP,
 	SUBROUTINE,
 	LIBRARY_CALL,

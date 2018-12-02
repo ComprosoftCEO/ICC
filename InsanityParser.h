@@ -29,13 +29,6 @@ private:
 	//Construct a new Insanity Program
 	InsanityProgram(bool isLibrary);
 
-	//Adding tokens to the Insanity program
-	void addCommand(char command);
-
-	bool addLabel(std::string label);
-	void addJump(std::string jump);
-	void addSubroutine(std::string jump);
-	void addLibraryCall(std::string jump);
 
 	void insertIf();
 	void exitIf();

@@ -24,37 +24,38 @@ void yyerror(const char *s);
 %token <cmd> COMMAND
 
 %token LIBOPEN LIBCLOSE
+//%parse-param
 
 %%
 
 //List of statements
 insanity
 	:						{$<list>$ = new StatementList();}
-	| insanity statement	{$<list>$->add($<stmt>2);}
+	| insanity statement	{$<list>1->addStatement($<stmt>2); $<list>$ = $<list>1;}
 
 
 //Single statement
 statement
 	: COMMAND				{$<stmt>$ = new CommandStatement($<cmd>1);}
-	| ':' label ':'			{printf("Read Label: %s\n", $<label>2->c_str());}
 	| if					{$<stmt>$ = new IfStatement($<list>1);}
-	| jump					{$<stmt>$ = new JumpStatement(*$<label>1);}
-	| subroutine			{$<stmt>$ = new SubroutineStatement(*$<label>1);}
-	| library				{$<stmt>$ = new LibraryCallStatement(*$<label>1);}
+	| label					{$<stmt>$ = new LabelStatement(*$<label>1); delete($<label>1);}
+	| jump					{$<stmt>$ = new JumpStatement(*$<label>1); delete($<label>1);}
+	| subroutine			{$<stmt>$ = new SubroutineStatement(*$<label>1); delete($<label>1);}
+	| library				{$<stmt>$ = new LibraryCallStatement(*$<label>1); delete($<label>1);}
 
 
-//A Label is a non-empty list of LABEL tokens
-label
+//A Label Name is a non-empty list of LABEL tokens
+lblName
 	: LABEL			{$<label>$ = $<label>1;}
-	| label LABEL	{$<label>1->append(*$<label>2); delete($<label>2);}
+	| lblName LABEL	{$<label>1->append(*$<label>2); delete($<label>2);}
 
 
 //Special sub-statements
-if:			'{' insanity '}' 	{$<list>1 = $<list>2;}
-jump:       '(' label ')'		{$<label>$ = $<label>2;}
-subroutine: '[' label ']'		{$<label>$ = $<label>2;}
-library: LIBOPEN label LIBCLOSE	{$<label>$ = $<label>2;}
-
+label:		':' lblName ':'			{$<label>$ = $<label>2;}
+if:			'{' insanity '}'	 	{$<list>$ = $<list>2;}
+jump:       '(' lblName ')'			{$<label>$ = $<label>2;}
+subroutine: '[' lblName ']'			{$<label>$ = $<label>2;}
+library: LIBOPEN lblName LIBCLOSE	{$<label>$ = $<label>2;}
 
 %%
 
