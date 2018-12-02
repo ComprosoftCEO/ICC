@@ -2,13 +2,15 @@
 
 all: Insanity.out
 
-Insanity.out: insanity.tab.c insanity.yy.c
-	gcc $^ -o $@
+Insanity.out: insanity.tab.cpp insanity.yy.cpp
+	g++ -std=c++11 $^ -o $@
 
-%.tab.c: %.y
+# Build the parser (using a Bison file)
+%.tab.cpp: %.y
 	bison -d -o $@ $<
 
-%.yy.c: %.l
+# Build the lexer (using a Flex file)
+%.yy.cpp: %.l
 	flex -o $@ $<
 
 
@@ -22,4 +24,4 @@ run: Insanity.out
 .PHONY: clean
 clean:
 	rm -f Insanity.out
-	rm -f insanity.tab.c insanity.yy.c insanity.tab.h
+	rm -f insanity.tab.cpp insanity.yy.cpp insanity.tab.hpp

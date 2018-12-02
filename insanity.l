@@ -1,5 +1,5 @@
 %{
-	#include "insanity.tab.h"
+	#include "insanity.tab.hpp"
 %}
 
 %x LBL

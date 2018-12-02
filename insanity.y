@@ -1,6 +1,7 @@
 %{
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
+#include "InsanityParser.h"
 
 // Declare stuff from Flex that Bison needs to know about:
 extern int yylex();

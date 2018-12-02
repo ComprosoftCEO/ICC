@@ -24,7 +24,7 @@ struct Command {
 
 public:
 	Command();
-	~Command()
+	~Command();
 };
 
 
