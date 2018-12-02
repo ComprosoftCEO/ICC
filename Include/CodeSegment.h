@@ -26,6 +26,7 @@ void jump(FILE* file, const std::string& label, int level);
 void subroutine(FILE* file, const std::string& label, bool isLibrary, int level);
 void libraryCall(FILE* file, const std::string& label, bool isLibrary, int level);
 void returnFrom(FILE* file, bool isLibrary, int level);
+void killProgram(FILE* file, bool isLibrary, int level);
 
 
 //If statements

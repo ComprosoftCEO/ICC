@@ -21,6 +21,19 @@ static void printLevel(FILE* file, int level,const char* str,...) {
 
 
 //
+// Mangle the name of a function or label
+//
+static std::string mangleLabel(const std::string& label) {
+	return "Lbl_"+label;
+}
+
+static std::string mangleLibraryCall(const std::string& label) {
+	return "Ins_"+label;
+}
+
+
+
+//
 // Header Code
 //
 void headerCode(FILE* file) {
@@ -31,7 +44,10 @@ void headerCode(FILE* file) {
 	fprintf(file,"#include <stdbool.h>\n");
 	fprintf(file,"#include <stddef.h>\n\n");
 
-	//2. Structure definitions
+	//2. Some macros
+	fprintf(file,"#define CLAMP(val,left,right) if ((val) < (left)) {(val) = (left);} else if ((val) > (right)) {(val) = (right);}\n\n");
+
+	//3. Structure definitions
 	fprintf(file,"typedef struct {\n");
 	fprintf(file,"\tchar* key;\n");
 	fprintf(file,"\tvoid* value;\n");
@@ -63,7 +79,9 @@ void headerCode(FILE* file) {
 //
 void mainFunction(FILE* file) {
 	fprintf(file,"int main(int argc, char** argv) {\n");
-	fprintf(file,"\tInsanity_t ins;\n");
+
+	//Initialization routine
+	fprintf(file,"\tInsanity_t ins = {.sp = 99};\n");
 	fprintf(file,"\tpInsanity_t insanity = &ins;\n");
 }
 void endMain(FILE* file) {
@@ -83,7 +101,7 @@ void mainSharedFunction(FILE* file,const map<string,int> libs) {
 
 	map<string,int>::const_iterator it;
 	for (it = libs.begin(); it != libs.end(); ++it) {
-		fprintf(file,"\t\t&&%s,\n",it->first.c_str());
+		fprintf(file,"\t\t&&%s,\n",mangleLabel(it->first).c_str());
 	}
 	fprintf(file,"\t};\n\n");
 
@@ -103,7 +121,7 @@ void defineLibraryCalls(FILE* file,const set<string>& libs) {
 
 	set<string>::const_iterator it;
 	for (it = libs.begin(); it != libs.end(); ++it) {
-		fprintf(file,"bool %s(pInsanity_t insanity);\n",(*it).c_str());
+		fprintf(file,"bool %s(pInsanity_t insanity);\n",mangleLibraryCall(*it).c_str());
 	}
 	fprintf(file,"\n");
 }
@@ -119,7 +137,7 @@ void defineLibraryLabels(FILE* file, const map<string,int> libs) {
 		const string& str = it->first;
 		int id = it->second;
 
-		fprintf(file,"bool %s(pInsanity_t insanity) {\n",str.c_str());
+		fprintf(file,"bool %s(pInsanity_t insanity) {\n",mangleLibraryCall(str).c_str());
 		fprintf(file,"\treturn RunSharedLibrary(insanity,%d);\n",id);
 		fprintf(file,"}\n\n");
 	}
@@ -132,23 +150,48 @@ void defineLibraryLabels(FILE* file, const map<string,int> libs) {
 // Label Statements
 //
 void defineLabel(FILE* file, const string& label, int level) {
-	printLevel(file,level,"%s:\n",label.c_str());
+	printLevel(file,level,"/*: :*/ %s: ;\n",mangleLabel(label).c_str());
 }
 
 void jump(FILE* file, const string& label, int level) {
-	printLevel(file,level,"goto %s;\n",label.c_str());
+	printLevel(file,level,"/*( )*/ goto %s;\n",mangleLabel(label).c_str());
 }
 
 void subroutine(FILE* file, const string& label, bool isLibrary, int level) {
+	static int id = 0;	//Generate a unique ID for every Jump to Subroutine command
 
+	printLevel(file,level,"/*[ ]*/ if (insanity->sp < 0) {\n");
+	printLevel(file,level,"/*   */ \tprintf(\"Stack Overflow!\\n\");\n");
+	printLevel(file,level,"/*   */ \treturn %s;\n",(isLibrary) ? "false" : "1");
+	printLevel(file,level,"/*   */ } else {\n");
+	printLevel(file,level,"/*   */ \tinsanity->stack[insanity->sp--] = &&SR_%d;\n",id);
+	printLevel(file,level,"/*   */ \tgoto %s;\n",mangleLabel(label).c_str());
+	printLevel(file,level,"/*   */ }\n");
+	printLevel(file,level,"/*   */ SR_%d: ;\n",id++);
 }
 
 void libraryCall(FILE* file, const std::string& label, bool isLibrary, int level) {
-	//printLevel(file,level);
+	printLevel(file,level,"/*[{}*/ if (insanity->sp < 0) {\n");
+	printLevel(file,level,"/*   */ \tprintf(\"Stack Overflow!\\n\");\n");
+	printLevel(file,level,"/*   */ \treturn %s;\n",(isLibrary) ? "false" : "1");
+	printLevel(file,level,"/*   */ } else {\n");
+	printLevel(file,level,"/*   */ \tinsanity->stack[insanity->sp--] = 0;\n");
+	printLevel(file,level,"/*   */ \tif (!%s(insanity)) {return %s;}\n",mangleLibraryCall(label).c_str(),(isLibrary) ? "false" : "1"); 
+	printLevel(file,level,"/*   */ }\n");
 }
 
 void returnFrom(FILE* file, bool isLibrary, int level) {
+	printLevel(file,level,"/* ; */ if (insanity->sp >= 99) {\n");
+	printLevel(file,level,"/*   */ \tprintf(\"Stack Underflow!\\n\");\n");
+	printLevel(file,level,"/*   */ \treturn %s;\n",(isLibrary) ? "false" : "1");
+	printLevel(file,level,"/*   */ } else {\n");
+	printLevel(file,level,"/*   */ \tvoid* ptr = insanity->stack[++insanity->sp];\n");
+	printLevel(file,level,"/*   */ \tif (!ptr) {return %s;} else {goto *ptr;}\n", (isLibrary) ? "true" : "0");
+	printLevel(file,level,"/*   */ }\n");
+}
 
+void killProgram(FILE* file, bool isLibrary, int level) {
+	printLevel(file,level,"/* . */ \treturn %s;\n",(isLibrary) ? "false" : "0");
 }
 
 
@@ -156,11 +199,11 @@ void returnFrom(FILE* file, bool isLibrary, int level) {
 // If statements
 //
 void beginIf(FILE* file, bool isLibrary, int level) {
-	printLevel(file,level,"if (insanity->compare) {\n");
+	printLevel(file,level,"/* { */ if (insanity->compare) {\n");
 }
 
 void endIf(FILE* file, bool isLibrary, int level) {
-	printLevel(file,level,"}\n");
+	printLevel(file,level,"/* } */ }\n");
 }
 
 
@@ -168,23 +211,23 @@ void endIf(FILE* file, bool isLibrary, int level) {
 // Memory Cursors
 //
 void cursorRight(FILE* file, bool isLibrary, int level) {
-	printLevel(file,level,"/* > */ insanity->mc = (insanity->mc <= 0) ? 0 : insanity->mc - 1;\n");
-	printLevel(file,level,"/*   */ insanity->mc = (insanity->mc >= 999) ? 999 : insanity->mc+1;\n");
+	printLevel(file,level,"/* > */ CLAMP(insanity->mc,0,999);\n");
+	printLevel(file,level,"/*   */ if (insanity->mc < 999) {++insanity->mc;}\n");
 }
 
 void cursorLeft(FILE* file, bool isLibrary, int level) {
-	printLevel(file,level,"/* < */ insanity->mc = (insanity->mc >= 999) ? 999 : insanity->mc+1;\n");
-	printLevel(file,level,"/*   */ insanity->mc = (insanity->mc <= 0) ? 0 : insanity->mc - 1;\n");
+	printLevel(file,level,"/* < */ CLAMP(insanity->mc,0,999);\n");
+	printLevel(file,level,"/*   */ if (insanity->mc > 0) {--insanity->mc;}\n");
 }
 
 void increase10(FILE* file, bool isLibrary, int level) {
-	printLevel(file,level,"/* \" */ insanity->dig = (insanity->dig <= 0) : 0 : insanity->dig-1;\n");
-	printLevel(file,level,"/*   */ insanity->dig = (insanity->dig >= 2) : 2 : insanity->dig+1;\n");
+	printLevel(file,level,"/* \" */ CLAMP(insanity->dig,0,2);\n");
+	printLevel(file,level,"/*   */ if (insanity->dig < 2) {++insanity->dig;}\n");
 }
 
 void decrease10(FILE* file, bool isLibrary, int level) {
-	printLevel(file,level,"/* ' */ insanity->dig = (insanity->dig >= 2) : 2 : insanity->dig+1;\n");
-	printLevel(file,level,"/*   */ insanity->dig = (insanity->dig <= 0) : 0 : insanity->dig-1;\n");
+	printLevel(file,level,"/* ' */ CLAMP(insanity->dig,0,2);\n");
+	printLevel(file,level,"/*   */ if (insanity->dig > 0) {--insanity->dig;}\n");
 }
 
 void resetCursors(FILE* file, bool isLibrary, int level) {
@@ -197,11 +240,15 @@ void resetCursors(FILE* file, bool isLibrary, int level) {
 // Memory and registers
 //
 void uploadACC(FILE* file, bool isLibrary, int level) {
-	printLevel(file,level,"/* _ */ insanity->mc = 0;\n");
+	printLevel(file,level,"/* _ */ CLAMP(insanity->mc,0,999);\n");
+	printLevel(file,level,"/*   */ insanity->acc = insanity->memory[insanity->mc];\n");
 }
 
 void swapMemory(FILE* file, bool isLibrary, int level) {
-
+	printLevel(file,level,"/* | */ CLAMP(insanity->mc,0,999);\n");
+	printLevel(file,level,"/*   */ {short temp = insanity->acc;\n");
+	printLevel(file,level,"/*   */  insanity->acc = insanity->memory[insanity->mc];\n");
+	printLevel(file,level,"/*   */  insanity->memory[insanity->mc] = temp;}\n");
 }
 
 void saveBackup(FILE* file, bool isLibrary, int level) {
@@ -219,19 +266,40 @@ void swapBackup(FILE* file, bool isLibrary, int level) {
 // Maths
 //
 void add(FILE* file, bool isLibrary, int level) {
-	printLevel(file,level,"/* + */ ");
+	printLevel(file,level,"/* + */ CLAMP(insanity->acc,-999,999);\n");
+	printLevel(file,level,"/*   */ if (insanity->acc < 999) {\n");
+	printLevel(file,level,"/*   */ \t++insanity->acc;\n");
+	printLevel(file,level,"/*   */ \tinsanity->overflow = false;\n");
+	printLevel(file,level,"/*   */ } else {\n");
+	printLevel(file,level,"/*   */ \tinsanity->overflow = true;\n");
+	printLevel(file,level,"/*   */ }\n");
 }
 
 void sub(FILE* file, bool isLibrary, int level) {
-
+	printLevel(file,level,"/* - */ CLAMP(insanity->acc,-999,999);\n");
+	printLevel(file,level,"/*   */ if (insanity->acc > -999) {\n");
+	printLevel(file,level,"/*   */ \t--insanity->acc;\n");
+	printLevel(file,level,"/*   */ \tinsanity->overflow = false;\n");
+	printLevel(file,level,"/*   */ } else {\n");
+	printLevel(file,level,"/*   */ \tinsanity->overflow = true;\n");
+	printLevel(file,level,"/*   */ }\n");
 }
 
 void addBackup(FILE* file, bool isLibrary, int level) {
-
+	printLevel(file,level,"/* & */ CLAMP(insanity->acc,-999,999);\n");
+	printLevel(file,level,"/*   */ CLAMP(insanity->bak,-999,999);\n");
+	printLevel(file,level,"/*   */ {short temp = insanity->acc + insanity->bak;\n");
+	printLevel(file,level,"/*   */  if ((temp >= -999) && (temp <= 999)) {\n");
+	printLevel(file,level,"/*   */  \tinsanity->acc = temp;\n");
+	printLevel(file,level,"/*   */  \tinsanity->overflow = false;\n");
+	printLevel(file,level,"/*   */  } else {\n");
+	printLevel(file,level,"/*   */  \tinsanity->overflow = true;\n");
+	printLevel(file,level,"/*   */ }}\n");
 }
 
 void negate(FILE* file, bool isLibrary, int level) {
-	printLevel(file,level,"/* ` */ insanity->acc *= -1;");
+	printLevel(file,level,"/* ` */ CLAMP(insanity->acc,-999,999);\n");
+	printLevel(file,level,"/*   */ insanity->acc *= -1;");
 }
 
 void resetACC(FILE* file, bool isLibrary, int level) {
@@ -239,7 +307,7 @@ void resetACC(FILE* file, bool isLibrary, int level) {
 }
 
 void randomNumber(FILE* file, bool isLibrary, int level) {
-
+	printLevel(file,level,"/* \% */ insanity->acc = ((rand() % 1999) - 999);\n");
 }
 
 
@@ -271,13 +339,13 @@ void testOverflow(FILE* file, bool isLibrary, int level) {
 // I/O functions
 //
 void getUserInput(FILE* file, bool isLibrary, int level) {
-
+	printLevel(file,level,"/* ? */ insanity->acc = getUserInput();\n");
 }
 
 void outputChar(FILE* file, bool isLibrary, int level) {
-
+	printLevel(file,level,"/* # */ printChar(insanity->acc);\n");
 }
 
 void pause(FILE* file, bool isLibrary, int level) {
-
+	printLevel(file,level,"/* , */ pause(insanity);\n");
 }

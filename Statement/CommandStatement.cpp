@@ -7,6 +7,10 @@ typedef void (*PrintFunc_t)(FILE*,bool,int);
 
 static const map<char,PrintFunc_t> ALL_COMMANDS = {
 
+	//Jumping around
+	{';',	returnFrom},
+	{'.',	killProgram},
+
 	//Cursors
 	{'<',	cursorLeft},
 	{'>',	cursorRight},
