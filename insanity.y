@@ -24,17 +24,19 @@ void yyerror(const char *s);
 //List of statements
 insanity
 	: /* Empty */
-	| statement insanity	{printf("Read Statement!\n");}
+	| insanity statement	{printf("Read Statement!\n");}
 
 
 //Single statement
 statement
-	: COMMAND				{printf("Read Command: %c\b", $<cmd>1);}
+	: COMMAND				{printf("Read Command: %c\n", $<cmd>1);}
 	| if
 	| jump
 	| subroutine
 	| label
 
+
+//Special sub-statements
 if:			'{' insanity '}' 	{printf("Read If\n");}
 label: 		':' LABEL ':'		{printf("Read Label Definition: %s\n", $<label>2);}
 jump:       '(' LABEL ')'		{printf("Read Jump Definition: %s\n", $<label>2);}
