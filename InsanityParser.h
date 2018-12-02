@@ -5,36 +5,21 @@
 #include <vector>
 #include <map>
 
-//All types of commands
-enum class CommandType {
-	NORMAL_COMMAND,
-	JUMP,
-	SUBROUTINE,
-	IF_STATEMENT
-};
-
-
-//Single Insanity Command
-struct Command {
-	char command;
-	CommandType type;
-	std::string label;
-	std::vector<Command*> subCommands;
-	Command* parent;
-
-public:
-	Command();
-	~Command();
-};
+#include "Statement/Statement.h"
+#include "Statement/CommandStatement.h"
+#include "Statement/JumpStatement.h"
+#include "Statement/SubroutineStatement.h"
+#include "Statement/LibraryCallStatement.h"
+#include "Statement/IfStatement.h"
 
 
 // Entire insanity program
 class InsanityProgram {
 
 private:
-	std::vector<Command*> program;
+	std::vector<Statement*> program;
 	std::map<std::string, size_t> labels;
-	std::vector<Command*> unresolvedLabels;
+	std::vector<Statement*> unresolvedLabels;
 	bool isLibrary;
 
 
