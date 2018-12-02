@@ -20,7 +20,7 @@
 [[]					{BEGIN(SUB);		return yytext[0];}
 [[][\{]				{BEGIN(CALL);		return LIBOPEN;}
 <LBL>[:]			{BEGIN(INITIAL); 	return yytext[0];}
-<JUMP>[(]			{BEGIN(INITIAL);	return yytext[0];}
+<JUMP>[)]			{BEGIN(INITIAL);	return yytext[0];}
 <SUB>[]]			{BEGIN(INITIAL);	return yytext[0];}
 <CALL>[\}][]]		{BEGIN(INITIAL);	return LIBCLOSE;}
 

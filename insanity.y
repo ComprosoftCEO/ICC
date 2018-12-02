@@ -28,6 +28,10 @@ void yyerror(InsanityProgram* program, const char *s);
 
 %%
 
+//Top level function
+code: insanity				{program->setList($<list>1);}
+
+
 //List of statements
 insanity
 	:						{$<list>$ = new StatementList();}
@@ -38,10 +42,10 @@ insanity
 statement
 	: COMMAND				{$<stmt>$ = new CommandStatement($<cmd>1);}
 	| if					{$<stmt>$ = new IfStatement($<list>1);}
-	| label					{$<stmt>$ = new LabelStatement(*$<label>1); delete($<label>1);}
-	| jump					{$<stmt>$ = new JumpStatement(*$<label>1); delete($<label>1);}
-	| subroutine			{$<stmt>$ = new SubroutineStatement(*$<label>1); delete($<label>1);}
-	| library				{$<stmt>$ = new LibraryCallStatement(*$<label>1); delete($<label>1);}
+	| label					{$<stmt>$ = new LabelStatement(*$<label>1); 	  program->resolveLabel(*$<label>1); 	delete($<label>1);}
+	| jump					{$<stmt>$ = new JumpStatement(*$<label>1); 		  program->unresolvedLabel(*$<label>1);	delete($<label>1);}
+	| subroutine			{$<stmt>$ = new SubroutineStatement(*$<label>1);  program->unresolvedLabel(*$<label>1); delete($<label>1);}
+	| library				{$<stmt>$ = new LibraryCallStatement(*$<label>1); program->addExternal(*$<label>1);		delete($<label>1);}
 
 
 //A Label Name is a non-empty list of LABEL tokens

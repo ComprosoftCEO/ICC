@@ -18,6 +18,10 @@ InsanityProgram::~InsanityProgram() {delete list;}
 //Validate labels and calls as they are found in the program
 //	Also test for duplicate labels
 void InsanityProgram::resolveLabel(const std::string& label) {
+	if (this->resolved.find(label) != this->resolved.end()) {
+		this->duplicate.insert(label);
+	}
+
 	this->resolved.insert(label);
 	this->unresolved.erase(label);
 }
