@@ -29,8 +29,8 @@ void returnFrom(FILE* file, bool isLibrary, int level);
 
 
 //If statements
-void beginIf(FILE* file, int level);
-void endIf(FILE* file, int level);
+void beginIf(FILE* file, bool isLibrary, int level);
+void endIf(FILE* file, bool isLibrary, int level);
 
 
 //Cursors

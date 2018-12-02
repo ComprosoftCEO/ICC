@@ -21,7 +21,7 @@ IfStatement::~IfStatement() {
 // Convert to C code
 //
 void IfStatement::toCode(FILE* output, bool isLibrary, int level) const {
-	beginIf(output,level);
+	beginIf(output,isLibrary,level);
 	this->list->toCode(output,isLibrary,level+1);
-	endIf(output,level);
+	endIf(output,isLibrary,level);
 }
