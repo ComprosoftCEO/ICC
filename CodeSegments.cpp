@@ -45,8 +45,9 @@ void headerCode(FILE* file) {
 	fprintf(file,"#include <stddef.h>\n\n");
 
 	//2. Some macros
-	fprintf(file,"#define CLAMP(val,left,right) if ((val) < (left)) {(val) = (left);} else if ((val) > (right)) {(val) = (right);}\n\n");
+	fprintf(file,"#define CLAMP(val,left,right) if ((val) < (left)) {(val) = (left);} else if ((val) > (right)) {(val) = (right);}\n");
 	fprintf(file,"#define DIGIT(x) ((x) == 1 ? 10 : ((x) == 2) ? 100 : 1)\n");
+	fprintf(file,"#define TEST_OVERFLOW(insanity,x) if (((x) < -999) || ((x) > 999)) {insanity->overflow = true;} else {insanity->overflow = false;}\n\n");
 
 	//3. Structure definitions
 	fprintf(file,"typedef struct {\n");
@@ -92,7 +93,7 @@ void headerCode(FILE* file) {
 	fprintf(file,"\tprintf(\"Pause Program:\\n\");\n");
 	fprintf(file,"\tprintf(\"--------------\\n\");\n");
 	fprintf(file,"\tprintf(\"Acc:      %%-6d\\tBak:     %%-6d\\n\",insanity->acc,insanity->bak);\n");
-	fprintf(file,"\tprintf(\"SP:       %%-6d\\n\",                 insanity->sp);\n");
+	fprintf(file,"\tprintf(\"SP:       %%-6d\\n\",               insanity->sp);\n");
 	fprintf(file,"\tprintf(\"Memory:   %%-6d\\tDigit:   %%-6d\\n\",insanity->mc,DIGIT(insanity->dig));\n");
 	fprintf(file,"\tprintf(\"Overflow: %%-6d\\tCompare: %%-6d\\n\",insanity->overflow,insanity->compare);\n");
 	fprintf(file,"\tprintf(\"\\nPress <Enter> to continue...\");\n");
@@ -295,22 +296,16 @@ void swapBackup(FILE* file, bool isLibrary, int level) {
 //
 void add(FILE* file, bool isLibrary, int level) {
 	printLevel(file,level,"/* + */ CLAMP(insanity->acc,-999,999);\n");
-	printLevel(file,level,"/*   */ if (insanity->acc < 999) {\n");
-	printLevel(file,level,"/*   */ \t++insanity->acc;\n");
-	printLevel(file,level,"/*   */ \tinsanity->overflow = false;\n");
-	printLevel(file,level,"/*   */ } else {\n");
-	printLevel(file,level,"/*   */ \tinsanity->overflow = true;\n");
-	printLevel(file,level,"/*   */ }\n");
+	printLevel(file,level,"/*   */ insanity->acc += DIGIT(insanity->dig);\n");
+	printLevel(file,level,"/*   */ TEST_OVERFLOW(insanity,insanity->acc);\n");
+	printLevel(file,level,"/*   */ CLAMP(insanity->acc,-999,999);\n");
 }
 
 void sub(FILE* file, bool isLibrary, int level) {
 	printLevel(file,level,"/* - */ CLAMP(insanity->acc,-999,999);\n");
-	printLevel(file,level,"/*   */ if (insanity->acc > -999) {\n");
-	printLevel(file,level,"/*   */ \t--insanity->acc;\n");
-	printLevel(file,level,"/*   */ \tinsanity->overflow = false;\n");
-	printLevel(file,level,"/*   */ } else {\n");
-	printLevel(file,level,"/*   */ \tinsanity->overflow = true;\n");
-	printLevel(file,level,"/*   */ }\n");
+	printLevel(file,level,"/*   */ insanity->acc -= DIGIT(insanity->dig);\n");
+	printLevel(file,level,"/*   */ TEST_OVERFLOW(insanity,insanity->acc);\n");
+	printLevel(file,level,"/*   */ CLAMP(insanity->acc,-999,999);\n");
 }
 
 void addBackup(FILE* file, bool isLibrary, int level) {
