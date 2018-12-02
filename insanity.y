@@ -1,6 +1,7 @@
 %{
 #include <cstdio>
 #include <cstdlib>
+#include <string>
 #include "InsanityParser.h"
 
 // Declare stuff from Flex that Bison needs to know about:
@@ -12,7 +13,7 @@ void yyerror(const char *s);
 %}
 
 %union {
-	char *label;		// Label name
+	std::string* label;	// Label name
 	char cmd;			// Single character command
 }
 
@@ -31,22 +32,22 @@ insanity
 //Single statement
 statement
 	: COMMAND				{printf("Read Command: %c\n", $<cmd>1);}
-	| ':' label ':'
+	| ':' label ':'			{printf("Read Label: %s\n", $<label>2->c_str());}
 	| if
-	| jump
-	| subroutine
+	| jump					{printf("Read Jump: %s\n", $<label>1->c_str());}
+	| subroutine			{printf("Read Subroutine: %s\n", $<label>1->c_str());}
 
 
 //A Label is a non-empty list of LABEL tokens
 label
-	: LABEL						{printf("Read Label: %s\n", $<label>1);}
-	| label LABEL				{printf("Append Label: %s\n", $<label>2);}
+	: LABEL						{$<label>$ = $<label>1;}
+	| label LABEL				{$<label>1->append(*$<label>2); delete($<label>2);}
 
 
 //Special sub-statements
 if:			'{' insanity '}' 	{printf("Read If\n");}
-jump:       '(' label ')'		{printf("Read Jump Definition: %s\n", $<label>2);}
-subroutine: '[' label ']'		{printf("Read Subroutine: %s\n", $<label>2);}
+jump:       '(' label ')'		{$<label>$ = $<label>2;}
+subroutine: '[' label ']'		{$<label>$ = $<label>2;}
 
 
 %%

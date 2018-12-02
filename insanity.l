@@ -1,4 +1,5 @@
 %{
+	#include <string>
 	#include "insanity.tab.hpp"
 %}
 
@@ -23,7 +24,7 @@
 <SUB>[]]			{BEGIN(INITIAL);	return yytext[0];}
 <CALL>[[]\\\}		{BEGIN(INITIAL);	return yytext[0];}
 
-<LBL,JUMP,SUB,CALL>[a-zA-Z0-9]+		{yylval.label = strdup(yytext); return LABEL;}
+<LBL,JUMP,SUB,CALL>[a-zA-Z0-9]+		{yylval.label = new std::string(yytext); return LABEL;}
 <LBL,JUMP,SUB,CALL>.				/* Ignore unrecognized symbols */	
 
 [;<>'"_^|$~+\-&`@%=*/\\!?#,]	{yylval.cmd = yytext[0]; return COMMAND;}
