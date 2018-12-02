@@ -42,7 +42,8 @@ void headerCode(FILE* file) {
 	fprintf(file,"#include <stdio.h>\n");
 	fprintf(file,"#include <stdlib.h>\n");
 	fprintf(file,"#include <stdbool.h>\n");
-	fprintf(file,"#include <stddef.h>\n\n");
+	fprintf(file,"#include <stddef.h>\n");
+	fprintf(file,"#include <time.h>\n\n");
 
 	//2. Some macros
 	fprintf(file,"#define CLAMP(val,left,right) if ((val) < (left)) {(val) = (left);} else if ((val) > (right)) {(val) = (right);}\n");
@@ -96,7 +97,8 @@ void headerCode(FILE* file) {
 	fprintf(file,"\tprintf(\"SP:       %%-6d\\n\",               insanity->sp);\n");
 	fprintf(file,"\tprintf(\"Memory:   %%-6d\\tDigit:   %%-6d\\n\",insanity->mc,DIGIT(insanity->dig));\n");
 	fprintf(file,"\tprintf(\"Overflow: %%-6d\\tCompare: %%-6d\\n\",insanity->overflow,insanity->compare);\n");
-	fprintf(file,"\tprintf(\"\\nPress <Enter> to continue...\");\n");
+	fprintf(file,"\tprintf(\"\\nPress <Enter> to continue...\\n\");\n");
+	fprintf(file,"\tfflush(stdout);\n");
 	fprintf(file,"\twhile(fgetc(stdin) != '\\n');\n");
 	fprintf(file,"}\n\n");
 }
@@ -112,6 +114,7 @@ void mainFunction(FILE* file) {
 	//Initialization routine
 	fprintf(file,"\tInsanity_t ins = {.sp = 99};\n");
 	fprintf(file,"\tpInsanity_t insanity = &ins;\n");
+	fprintf(file,"\tsrand(time(NULL));\n");
 }
 void endMain(FILE* file) {
 	fprintf(file,"\treturn 0;\n");
@@ -311,26 +314,22 @@ void sub(FILE* file, bool isLibrary, int level) {
 void addBackup(FILE* file, bool isLibrary, int level) {
 	printLevel(file,level,"/* & */ CLAMP(insanity->acc,-999,999);\n");
 	printLevel(file,level,"/*   */ CLAMP(insanity->bak,-999,999);\n");
-	printLevel(file,level,"/*   */ {short temp = insanity->acc + insanity->bak;\n");
-	printLevel(file,level,"/*   */  if ((temp >= -999) && (temp <= 999)) {\n");
-	printLevel(file,level,"/*   */  \tinsanity->acc = temp;\n");
-	printLevel(file,level,"/*   */  \tinsanity->overflow = false;\n");
-	printLevel(file,level,"/*   */  } else {\n");
-	printLevel(file,level,"/*   */  \tinsanity->overflow = true;\n");
-	printLevel(file,level,"/*   */ }}\n");
+	printLevel(file,level,"/*   */ insanity->acc += insanity->bak;\n");
+	printLevel(file,level,"/*   */ TEST_OVERFLOW(insanity,insanity->acc);\n");
+	printLevel(file,level,"/*   */ CLAMP(insanity->acc,-999,999);\n");
 }
 
 void negate(FILE* file, bool isLibrary, int level) {
 	printLevel(file,level,"/* ` */ CLAMP(insanity->acc,-999,999);\n");
-	printLevel(file,level,"/*   */ insanity->acc *= -1;");
+	printLevel(file,level,"/*   */ insanity->acc *= -1;\n");
 }
 
 void resetACC(FILE* file, bool isLibrary, int level) {
-	printLevel(file,level,"/* @ */ insanity->acc = 0;");
+	printLevel(file,level,"/* @ */ insanity->acc = 0;\n");
 }
 
 void randomNumber(FILE* file, bool isLibrary, int level) {
-	printLevel(file,level,"/* \% */ insanity->acc = ((rand() % 1999) - 999);\n");
+	printLevel(file,level,"/* %% */ insanity->acc = ((rand() % 1999) - 999);\n");
 }
 
 
