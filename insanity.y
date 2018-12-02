@@ -9,7 +9,7 @@ extern int yylex();
 extern int yyparse();
 extern FILE *yyin;
  
-void yyerror(const char *s);
+void yyerror(InsanityProgram* program, const char *s);
 %}
 
 %union {
@@ -24,7 +24,7 @@ void yyerror(const char *s);
 %token <cmd> COMMAND
 
 %token LIBOPEN LIBCLOSE
-//%parse-param
+%parse-param {InsanityProgram* program}
 
 %%
 
@@ -73,11 +73,15 @@ int main(int argc, char** argv) {
 //	yyin = myfile;
 	
 	// Parse through the input:
-	yyparse();
-	
+	InsanityProgram* program = new InsanityProgram(false);
+	yyparse(program);
+
+	program->toProgram();
+	delete program;
+	return 0;
 }
 
-void yyerror(const char *s) {
+void yyerror(InsanityProgram* program, const char *s) {
 	printf("Parse Error! Message: %s\n",s);
 	exit(-1);
 }

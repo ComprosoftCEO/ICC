@@ -1,10 +1,9 @@
 #ifndef INSANITY_PARSER_HEADER
 #define INSANITY_PARSER_HEADER
 
-#include <fstream>
-#include <vector>
-#include <map>
+#include <set>
 
+//All of the statement types
 #include "Statement/Statement.h"
 #include "Statement/CommandStatement.h"
 #include "Statement/JumpStatement.h"
@@ -18,27 +17,40 @@
 class InsanityProgram {
 
 private:
-	std::vector<Statement*> program;
-	std::map<std::string, size_t> labels;
-	std::vector<Statement*> unresolvedLabels;
+	StatementList* list;
+	std::set<std::string> unresolved;		// List of unresolved labels
+	std::set<std::string> resolved;			// List of resolved labels
+	std::set<std::string> external;			// List of external library calls
 	bool isLibrary;
 
 
-private:
-
-	//Construct a new Insanity Program
-	InsanityProgram(bool isLibrary);
-
-
-	void insertIf();
-	void exitIf();
-
-
 public:
-	~InsanityProgram();
+	InsanityProgram(bool isLibrary): isLibrary(isLibrary) {}
+	~InsanityProgram() {delete list;}
 
-	static InsanityProgram* readProgram(bool isLibrary, std::ifstream file);
-	void printError();
+	//Validate labels and calls as they are found in the program
+	void resolveLabel(const std::string& label) {
+		this->resolved.insert(label);
+		this->unresolved.erase(label);
+	}
+
+	void unresolvedLabel(const std::string& label) {
+		if (this->resolved.find(label) != this->resolved.end()) {
+			this->unresolved.insert(label);
+		}
+	}
+
+
+	void addExternal(const std::string& call) {
+		this->external.insert(call);
+	}
+
+
+
+	//Might cause a seg fault or memory leak if not careful
+	void setList(StatementList* newList) {this->list = newList;}
+
+	void toProgram();
 };
 
 #endif
