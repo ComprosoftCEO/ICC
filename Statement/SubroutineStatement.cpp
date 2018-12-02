@@ -12,6 +12,6 @@ SubroutineStatement::SubroutineStatement(const std::string& label):
 // To Code
 //
 void SubroutineStatement::toCode(FILE* output, bool isLibrary, int level) const {
-	defineSubroutine(output,this->getLabel(),isLibrary,level);
+	subroutine(output,this->getLabel(),isLibrary,level);
 }
 

@@ -13,6 +13,6 @@ JumpStatement::JumpStatement(const std::string& label) :
 // Convert to code
 //
 void JumpStatement::toCode(FILE* output, bool isLibrary, int level) const {
-	defineGoto(output,this->getLabel(),level);
+	jump(output,this->getLabel(),level);
 }
 

@@ -121,37 +121,29 @@ void defineLibraryLabels(FILE* file, const map<string,int> libs) {
 
 
 //
-// Label Statement
+// Label Statements
 //
 void defineLabel(FILE* file, const string& label, int level) {
 	printLevel(file,level);
 	fprintf(file,"%s:\n",label.c_str());
 }
 
-//
-// Goto Statement
-//
-void defineGoto(FILE* file, const string& label, int level) {
+void jump(FILE* file, const string& label, int level) {
 	printLevel(file,level);
 	fprintf(file,"goto %s;\n",label.c_str());
 }
 
-
-//
-// Subroutine Statement
-//
-void defineSubroutine(FILE* file, const string& label, bool isLibrary, int level) {
+void subroutine(FILE* file, const string& label, bool isLibrary, int level) {
 
 }
 
-
-//
-// Library Call
-//
-void defineLibraryCall(FILE* file, const std::string& label, bool isLibrary, int level) {
+void libraryCall(FILE* file, const std::string& label, bool isLibrary, int level) {
 	//printLevel(file,level);
 }
 
+void returnFrom(FILE* file, bool isLibrary) {
+
+}
 
 
 //
@@ -165,4 +157,116 @@ void beginIf(FILE* file, int level) {
 void endIf(FILE* file, int level) {
 	printLevel(file,level);
 	fprintf(file,"}\n");
+}
+
+
+//
+// Memory Cursors
+//
+void cursorRight(FILE* file) {
+
+}
+
+void cursorLeft(FILE* file) {
+
+}
+
+void increase10(FILE* file) {
+
+}
+
+void decrease10(FILE* file) {
+
+}
+
+void resetCursors(FILE* file) {
+
+}
+
+
+//
+// Memory and registers
+//
+void uploadACC(FILE* file) {
+
+}
+
+void swapMemory(FILE* file) {
+
+}
+
+void saveBackup(FILE* file) {
+
+}
+
+void swapBackup(FILE* file) {
+
+}
+
+
+//
+// Maths
+//
+void add(FILE* file) {
+
+}
+
+void sub(FILE* file) {
+
+}
+
+void addBackup(FILE* file) {
+
+}
+
+void negate(FILE* file) {
+
+}
+
+void resetACC(FILE* file) {
+
+}
+
+void randomNumber(FILE* file) {
+
+}
+
+
+//
+// Comparisons
+//
+void EQU(FILE* file) {
+
+}
+
+void NEQ(FILE* file) {
+
+}
+
+void GTR(FILE* file) {
+
+}
+
+void LSS(FILE* file) {
+
+}
+
+void testOverflow(FILE* file) {
+
+}
+
+
+//
+// I/O functions
+//
+void getUserInput(FILE* file) {
+
+}
+
+void outputChar(FILE* file) {
+
+}
+
+void pause(FILE* file) {
+
 }

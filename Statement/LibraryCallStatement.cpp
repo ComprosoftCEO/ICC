@@ -14,5 +14,5 @@ LibraryCallStatement::LibraryCallStatement(const std::string& label):
 // Convert to code
 //	
 void LibraryCallStatement::toCode(FILE* output, bool isLibrary, int level) const {
-	defineLibraryCall(output,this->getLabel(),isLibrary,level);
+	libraryCall(output,this->getLabel(),isLibrary,level);
 }
