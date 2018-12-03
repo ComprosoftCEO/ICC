@@ -133,7 +133,7 @@ void mainSharedFunction(FILE* file,const map<string,int> libs) {
 
 	map<string,int>::const_iterator it;
 	for (it = libs.begin(); it != libs.end(); ++it) {
-		fprintf(file,"\t\t&&%s,\n",mangleLabel(it->first).c_str());
+		fprintf(file,"\t\t[%d] = &&%s,\n",it->second,mangleLabel(it->first).c_str());
 	}
 	fprintf(file,"\t};\n\n");
 
