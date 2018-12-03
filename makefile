@@ -2,12 +2,12 @@
 CC=g++
 CFLAGS=-std=c++11 -IInclude
 
-PROGRAM=ICK.out
+PROGRAM=icc.out
 
 OBJECTS=\
 	insanity.tab.o \
 	insanity.yy.o \
-	ICK.o \
+	ICC.o \
 	InsanityProgram.o \
 	CodeSegments.o \
 	Statement/Statement.o \
