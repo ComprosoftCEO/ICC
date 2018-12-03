@@ -2,6 +2,7 @@
 #include "insanity.tab.hpp"
 #include <cstdio>
 #include <iostream>
+using std::string;
 
 extern FILE *yyin;
 
@@ -9,7 +10,7 @@ int main(int argc, char** argv) {
 
 	if (argc < 2) {
 		fprintf(stderr,"icc: Error! No input file given!\n");
-		fprintf(stderr,"Usage: %s <FileName>\n",argv[0]);
+		fprintf(stderr,"Usage: %s <infile> [outfile]\n",argv[0]);
 		return 3;
 	}
 
@@ -20,6 +21,7 @@ int main(int argc, char** argv) {
 		fprintf(stderr,"Error opening file '%s'!\n",argv[1]);
 		return 1;
 	}
+
 
 	//Get everything ready to parse
 	InsanityProgram* program = new InsanityProgram;
@@ -33,7 +35,9 @@ int main(int argc, char** argv) {
 	}
 
 	//Output the program to the file
-	if (!program->toProgram(stdout)) {
+	string outfile = argv[1];
+	if (argc > 2) {outfile = argv[2];} else {outfile += ".c";}
+	if (!program->toProgram(outfile.c_str())) {
 		return delete(program),2;
 	}
 	delete program;

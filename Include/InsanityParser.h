@@ -54,7 +54,7 @@ public:
 
 
 	//Returns false on error
-	bool toProgram(FILE* file) const;
+	bool toProgram(const char* file) const;
 };
 
 

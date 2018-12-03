@@ -98,7 +98,7 @@ static void printSet(const char* message, const set<string> toPrint) {
 //
 // Convert to a text program
 //
-bool InsanityProgram::toProgram(FILE* file) const {
+bool InsanityProgram::toProgram(const char* f) const {
 
 	//Make sure we have statements
 	if ((!list) || (list->size() <= 0)) {
@@ -122,6 +122,13 @@ bool InsanityProgram::toProgram(FILE* file) const {
 	}
 
 
+	//Okay, open the file
+	FILE* file = fopen(f,"w");
+	if (!file) {
+		fprintf(stderr,"Error opening output file!\n");
+		return false;
+	}
+
 	//Okay, write the code!!!
 	headerCode(file);
 	defineLibraryCalls(file,this->libCall);
@@ -137,6 +144,7 @@ bool InsanityProgram::toProgram(FILE* file) const {
 		endMain(file);
 	}
 
+	fclose(file);
 	return true;
 }
 
