@@ -27,9 +27,9 @@
 <LIBLBL>[\}][:]		{BEGIN(INITIAL);	return LIBLBLCLOSE;}
 <CALL>[\}][]]		{BEGIN(INITIAL);	return LIBSUBCLOSE;}
 
-<LBL,JUMP,SUB,LIBLBL,CALL>[a-zA-Z][a-zA-Z0-9]+		{yylval.label = new std::string(yytext); return LABEL;}
+<LBL,JUMP,SUB,LIBLBL,CALL>[a-zA-Z][a-zA-Z0-9]*		{yylval.label = new std::string(yytext); return LABEL;}
 <LBL,JUMP,SUB,LIBLBL,CALL>.							/* Ignore unrecognized symbols */	
-<LBL,JUMP,SUB,LIBLBL,CALL>\n							/* Ignore unrecognized symbols */	
+<LBL,JUMP,SUB,LIBLBL,CALL>\n						/* Ignore unrecognized symbols */	
 
 [.;<>'"_^|$~+\-&`@%=*/\\!?#,]	{yylval.cmd = yytext[0]; return COMMAND;}
 .								/* Ignore empty text */
