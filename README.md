@@ -1,2 +1,2 @@
-# ICK
+# ICC
 Insanity to C Compiler
