@@ -70,6 +70,6 @@ libraryCall:  LIBSUBOPEN lblName LIBSUBCLOSE	{$<label>$ = $<label>2;}
 
 
 static void yyerror(InsanityProgram* program, const char *s) {
-	printf("Parse Error! Message: %s\n",s);
+	fprintf(stderr,"Parse Error! Message: %s\n",s);
 	exit(-1);
 }
