@@ -7,6 +7,15 @@
 #include <stdbool.h>
 #include <stddef.h>		/* For size_t */
 
+
+//Define an insanity method call
+#define INSANITY_METHOD(name,toCall) 				\
+	bool Ins_##name(pInsanity_t insanity) {			\
+		if (insanity->sp < 99) {++insanity->sp;}	\
+		return toCall(insanity); 					\
+	}
+
+
 //Each native library can store it's own set of data
 typedef struct LibraryData_t {
 	char* key;
