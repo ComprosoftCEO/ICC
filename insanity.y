@@ -30,12 +30,22 @@
 	StatementList* list;	// List of statements
 }
 
+%destructor {delete($$);} <label> <stmt> <list>
 
+
+//Terminal types
 %token <label> LABEL
 %token <cmd> COMMAND
 
-%token LIBSUBOPEN LIBSUBCLOSE
-%token LIBLBLOPEN LIBLBLCLOSE
+%token LIBSUBOPEN  "[{"
+%token LIBSUBCLOSE "}]"
+%token LIBLBLOPEN  ":{"
+%token LIBLBLCLOSE "}:"
+
+//Nonterminal types
+%type <list> insanity if
+%type <stmt> statement
+%type <label> lblName label jump subroutine libraryLabel libraryCall
 
 %%
 
@@ -51,35 +61,37 @@ insanity
 
 //Single statement
 statement
-	: COMMAND				{$<stmt>$ = new CommandStatement($<cmd>1);}
-	| if					{$<stmt>$ = new IfStatement($<list>1);}
-	| label					{$<stmt>$ = new LabelStatement(*$<label>1); 	  program->labelDefinition(*$<label>1); delete($<label>1);}
-	| jump					{$<stmt>$ = new JumpStatement(*$<label>1); 		  program->labelCall(*$<label>1);		delete($<label>1);}
-	| subroutine			{$<stmt>$ = new SubroutineStatement(*$<label>1);  program->labelCall(*$<label>1); 		delete($<label>1);}
-	| libraryLabel			{$<stmt>$ = new LabelStatement(*$<label>1);		  program->libraryLabel(*$<label>1);	delete($<label>1);}
-	| libraryCall			{$<stmt>$ = new LibraryCallStatement(*$<label>1); program->libraryCall(*$<label>1);		delete($<label>1);}
+	: COMMAND				{$$ = new CommandStatement($1);}
+	| if					{$$ = new IfStatement($1);}
+	| label					{$$ = new LabelStatement(*$1);			program->labelDefinition(*$1);	delete($1);}
+	| jump					{$$ = new JumpStatement(*$1);			program->labelCall(*$1);		delete($1);}
+	| subroutine			{$$ = new SubroutineStatement(*$1);		program->labelCall(*$1); 		delete($1);}
+	| libraryLabel			{$$ = new LabelStatement(*$1);			program->libraryLabel(*$1);		delete($1);}
+	| libraryCall			{$$ = new LibraryCallStatement(*$1);	program->libraryCall(*$1);		delete($1);}
 
 
 //A Label Name is a non-empty list of LABEL tokens
 lblName
-	: LABEL			{$<label>$ = $<label>1;}
-	| lblName LABEL	{$<label>1->append(*$<label>2); delete($<label>2);}
+	: LABEL			{$$ = $1;}
+	| lblName LABEL	{$1->append(*$2); $$ = $1; delete($2);}
 
 
-//Special sub-statements
-label:		':' lblName ':'				{$<label>$ = $<label>2;}
-if:			'{' insanity '}'		 	{$<list>$ = $<list>2;}
-jump:       '(' lblName ')'				{$<label>$ = $<label>2;}
-subroutine: '[' lblName ']'				{$<label>$ = $<label>2;}
+//If statements
+if:			'{' insanity '}'	 	{$$ = $2;}
+
+//Label statements
+label:		':' lblName ':'			{$$ = $2;}
+jump:       '(' lblName ')'			{$$ = $2;}
+subroutine: '[' lblName ']'			{$$ = $2;}
 
 //Library functions
-libraryLabel: LIBLBLOPEN lblName LIBLBLCLOSE	{$<label>$ = $<label>2;}
-libraryCall:  LIBSUBOPEN lblName LIBSUBCLOSE	{$<label>$ = $<label>2;}
+libraryLabel: ":{" lblName "}:"		{$$ = $2;}
+libraryCall:  "[{" lblName "}]"		{$$ = $2;}
 
 %%
 
 
 static void yyerror(YYLTYPE* yyllocp, yyscan_t unused, InsanityProgram* program, const char *msg) {
-	fprintf(stderr, "[Line %d:%d]: %s\n",
-		yyllocp->first_line, yyllocp->first_column, msg);
+	fprintf(stderr, "%s! [Line %d:%d]\n",
+		msg,yyllocp->first_line, yyllocp->first_column);
 }
