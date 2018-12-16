@@ -1,16 +1,27 @@
-%{
-#include <cstdio>
-#include <cstdlib>
-#include <string>
-#include <InsanityParser.h>
+%define api.pure full
+%locations
 
-// Declare stuff from Flex that Bison needs to know about:
-extern int yylex();
-extern int yyparse();
-extern FILE *yyin;
- 
-static void yyerror(InsanityProgram* program, const char *s);
-%}
+%parse-param { yyscan_t scanner } 
+%lex-param {yyscan_t scanner}
+%parse-param {InsanityProgram* program}
+
+%code top {
+	#include <cstdio>
+	#include <cstdlib>
+	#include <string>
+	#include <InsanityParser.h>
+}
+
+%code requires {
+	// Declare stuff from Flex that Bison needs to know about:
+	typedef void* yyscan_t;
+}
+
+%code {
+	int yylex(YYSTYPE* yylvalp, YYLTYPE* yyllocp, yyscan_t scanner);
+	static void yyerror(YYLTYPE* yyllocp, yyscan_t unused, InsanityProgram* program, const char* msg);
+}
+
 
 %union {
 	std::string* label;		// Label name
@@ -25,7 +36,6 @@ static void yyerror(InsanityProgram* program, const char *s);
 
 %token LIBSUBOPEN LIBSUBCLOSE
 %token LIBLBLOPEN LIBLBLCLOSE
-%parse-param {InsanityProgram* program}
 
 %%
 
@@ -69,7 +79,7 @@ libraryCall:  LIBSUBOPEN lblName LIBSUBCLOSE	{$<label>$ = $<label>2;}
 %%
 
 
-static void yyerror(InsanityProgram* program, const char *s) {
-	fprintf(stderr,"Parse Error! Message: %s\n",s);
-	exit(-1);
+static void yyerror(YYLTYPE* yyllocp, yyscan_t unused, InsanityProgram* program, const char *msg) {
+	fprintf(stderr, "[Line %d:%d]: %s\n",
+		yyllocp->first_line, yyllocp->first_column, msg);
 }

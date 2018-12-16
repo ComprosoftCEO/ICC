@@ -1,10 +1,10 @@
 #include <InsanityParser.h>
-#include "insanity.tab.hpp"
+#include "insanity.tab.h"
+#include "insanity.yy.h"
 #include <cstdio>
 #include <iostream>
 using std::string;
 
-extern FILE *yyin;
 
 int main(int argc, char** argv) {
 
@@ -25,9 +25,13 @@ int main(int argc, char** argv) {
 
 	//Get everything ready to parse
 	InsanityProgram* program = new InsanityProgram;
-	yyin = file;
+	yyscan_t scanner;          
+	yylex_init(&scanner);
+	yyset_in(file,scanner);
 
-	int result = yyparse(program);
+	int result = yyparse(scanner,program);
+
+	yylex_destroy(scanner);
 	fclose(file);
 
 	if (result != 0) {

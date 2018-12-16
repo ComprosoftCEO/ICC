@@ -31,12 +31,12 @@ $(PROGRAM): $(OBJECTS)
 # Build the parser (using a Bison file)
 %.tab.o: %.tab.cpp
 %.tab.cpp: %.y
-	bison -d -o $@ $<
+	bison --defines=$(@:%.cpp=%.h) -o $@ $<
 
 # Build the lexer (using a Flex file)
 %.yy.o: %.yy.cpp
 %.yy.cpp: %.l
-	flex -o $@ $<
+	flex --header-file=$(@:%.cpp=%.h) -o $@ $<
 
 
 
@@ -49,4 +49,5 @@ run: $(PROGRAM)
 .PHONY: clean
 clean:
 	rm -f $(PROGRAM) $(OBJECTS)
-	rm -f insanity.tab.cpp insanity.yy.cpp insanity.tab.hpp
+	rm -f insanity.tab.cpp insanity.yy.cpp
+	rm -f insanity.tab.h insanity.yy.h
