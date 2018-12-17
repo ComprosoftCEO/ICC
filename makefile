@@ -1,12 +1,12 @@
 # Makefile for Insanity C Compiler
 CC=g++
-CFLAGS=-std=c++11 -IInclude
+CFLAGS=-std=c++11 -Iinclude
 
 PROGRAM=icc.out
 
 OBJECTS=\
-	insanity.tab.o \
-	insanity.yy.o \
+	Parser/insanity.tab.o \
+	Parser/insanity.yy.o \
 	ICC.o \
 	InsanityProgram.o \
 	CodeSegments.o \
@@ -18,6 +18,10 @@ OBJECTS=\
 	Statement/LibraryCallStatement.o \
 	Statement/IfStatement.o \
 	Statement/StatementList.o
+
+# Add the source directory
+OBJECTS := $(OBJECTS:%=src/%)
+
 
 
 all: $(PROGRAM)
@@ -49,5 +53,5 @@ run: $(PROGRAM)
 .PHONY: clean
 clean:
 	rm -f $(PROGRAM) $(OBJECTS)
-	rm -f insanity.tab.cpp insanity.yy.cpp
-	rm -f insanity.tab.h insanity.yy.h
+	rm -f src/parser/insanity.tab.cpp src/parser/insanity.yy.cpp
+	rm -f src/parser/insanity.tab.h src/parser/insanity.yy.h

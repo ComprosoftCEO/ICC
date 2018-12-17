@@ -1,6 +1,6 @@
 #include <InsanityParser.h>
-#include "insanity.tab.h"
-#include "insanity.yy.h"
+#include "parser/insanity.tab.h"
+#include "parser/insanity.yy.h"
 #include <cstdio>
 #include <iostream>
 using std::string;

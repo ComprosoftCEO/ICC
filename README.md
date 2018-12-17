@@ -35,7 +35,7 @@ Unlike the [original Insanity interpreter](https://www.github.com/ComprosoftCEO/
 <br/>
 
 ## Native Library Development
-Native shared libraries can be written for Insantiy to provide additional features not included in the languages (such as threading, file I/O, operating system calls, etc.). All files needed for native library development are stored in the `Dev/` folder
+Native shared libraries can be written for Insantiy to provide additional features not included in the languages (such as threading, file I/O, operating system calls, etc.). All files needed for native library development are stored in the `dev/` folder
 * __Insanity-Dev.h__ - All macro and structure definitions for reading Insanity data. Also includes some helper functions.
 * __Insanity-Dev.c__ (Optional) - Function implementations for helper functions. Only include this file if you intend to use these functions.
 
