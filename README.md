@@ -33,6 +33,58 @@ Note: While you should be able to compile the C files using any C compiler, Insa
 Unlike the [original Insanity interpreter](https://www.github.com/ComprosoftCEO/Insanity), ICC adds support for external labels and library calls. By default, an Insanity program is compiled to run with an `int main()` function in C. However, if an Insanity file has at least one external label, it is instead treated as a shared object. This means that the C code must be compiled to a .o file (and not an executable). Multiple .o files can be linked together to provide external calls to multiple files, or create a C shared library that can be used by other Insanity programs.
 
 <br/>
+
+## Native Library Development
+Native shared libraries can be written for Insantiy to provide additional features not included in the languages (such as threading, file I/O, operating system calls, etc.). All files needed for native library development are stored in the `Dev/` folder
+* __Insanity-Dev.h__ - All macro and structure definitions for reading Insanity data. Also includes some helper functions.
+* __Insanity-Dev.c__ (Optional) - Function implementations for helper functions. Only include this file if you intend to use these functions.
+
+<br/>
+
+The Insanity-Dev.h header defines the following structures:
+* __Insanity_t__ - Data used by native Insanity programs. When writing you C code, PLEASE DO NOT attempt to corrupt this structure (such as writing invalid values into the Accumulator).
+* __LibraryData_t__ - Used for storing library-specific data, if you library function needs to store data between invocations. 
+
+<br/>
+
+As of right now, the following helper functions are defined:
+```c
+//Get library specific data using a pre-defined string
+void* getData(pInsanity_t insanity, const char* library);
+
+//Set library specific data using a pre-defined string
+void setData(pInsanity_t insanity, const char* library, void* data);
+```
+
+<br/>
+
+Insanity functions should have the following prototype:
+```c
+bool myMethod(pInsanity_t insanity);
+```
+If the function returns `false`, then the Insanity program will terminate after returning from the method.
+
+<br/>
+
+To expose a function to Insanity, be sure to use the additional macro `INSANITY_METHOD(name,toCall)`. The `name` parameter specifies what should be in the \<Label\> part of an external library call, and the `toCall` parameter specifies what local C function to call.  Here is an example sample of code:
+```c
+//Method.c
+#include <Insanity-Dev.h>
+
+static bool myMethod(pInsanity_t insanity) {
+  // Do some stuff...
+  return true;
+}
+
+//Define public Insanity methods
+INSANITY_METHOD(Method,myMethod);
+```
+```c
+//Method.ins
+[{Method}]
+```
+
+<br/>
 <br/>
 
 # Insanity Programming Language
