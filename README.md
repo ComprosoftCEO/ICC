@@ -12,11 +12,15 @@ Insanity is an [Esoteric Programming Language](https://en.wikipedia.org/wiki/Eso
 <br/>
 
 ## Compiling ICC
-The provided makefile should handle all of the compiling and linking of objects. However, you need to install the [Flex Lexer](https://www.gnu.org/software/flex/) and the [Bison Parser](https://www.gnu.org/software/bison/), as ICC uses Flex and Bison to generate the parser. For Debian distros, this is as simple as:
+The provided makefile should handle all of the compiling and linking of objects. However, you need to install the [Flex Lexer](https://www.gnu.org/software/flex/) and the [Bison Parser](https://www.gnu.org/software/bison/), as ICC uses Flex and Bison to generate the parser. For Debian Linux distributions, this is as simple as:
 ```
 sudo apt-get install flex
 sudo apt-get install bison
 ```
+
+<br>
+
+_Note:_ While you should be able to compile the C files using any C compiler, Insanity uses [pointers to labels](https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html) for handling certain features in the code. Although this feature is supported by GCC, not all compilers may support this.
 
 <br/>
 
@@ -24,8 +28,6 @@ sudo apt-get install bison
 ICC \<InputFile\> \[OutFile\]
 * __InputFile__ - The Insanity file to compile to C code. Insanity files generally have a __.ins__ extension.
 * __OutFile (Optional)__ - File to use for writing the C code. By default, ICC outputs to __\<InputFile\>.c__
-
-Note: While you should be able to compile the C files using any C compiler, Insanity uses [pointers to labels](https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html) for handling certain features in the code. Although this feature is supported by GCC, not all compilers may support this.
 
 <br/>
 
