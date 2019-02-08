@@ -53,5 +53,5 @@ run: $(PROGRAM)
 .PHONY: clean
 clean:
 	rm -f $(PROGRAM) $(OBJECTS)
-	rm -f src/parser/insanity.tab.cpp src/parser/insanity.yy.cpp
-	rm -f src/parser/insanity.tab.h src/parser/insanity.yy.h
+	rm -f src/Parser/insanity.tab.cpp src/Parser/insanity.yy.cpp
+	rm -f src/Parser/insanity.tab.h src/Parser/insanity.yy.h
